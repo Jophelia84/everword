@@ -1,0 +1,165 @@
+{
+ "occasions": [
+  [
+   "birthday",
+   "Birthday"
+  ],
+  [
+   "anniversary",
+   "Anniversary"
+  ],
+  [
+   "memory",
+   "In memory"
+  ],
+  [
+   "milestone",
+   "Milestone"
+  ],
+  [
+   "baby",
+   "A new baby"
+  ],
+  [
+   "romance",
+   "Romance"
+  ],
+  [
+   "pet",
+   "For a pet parent"
+  ],
+  [
+   "him",
+   "For him"
+  ],
+  [
+   "everyday",
+   "Just because"
+  ]
+ ],
+ "recipients": [
+  "my daughter",
+  "my son",
+  "my wife",
+  "my husband",
+  "Mom",
+  "Dad",
+  "Grandma",
+  "Grandpa",
+  "my sister",
+  "my brother",
+  "my girlfriend",
+  "my boyfriend",
+  "my best friend",
+  "my granddaughter",
+  "my grandson"
+ ],
+ "seed": {
+  "birthday": "my daughter",
+  "anniversary": "my wife",
+  "memory": "Mom",
+  "milestone": "my daughter",
+  "baby": "my daughter",
+  "romance": "my wife",
+  "pet": "my daughter",
+  "him": "my husband",
+  "everyday": "my daughter"
+ },
+ "cards": {
+  "my daughter": [
+   "Never forget how much I love you.",
+   "You are stronger than you know and loved more than you will ever realize. I am so proud of you.",
+   "Never forget that I love you. I hope you believe in yourself the way I believe in you. I can't promise life will always be kind to you, but I can promise that I will be, every day of mine."
+  ],
+  "my son": [
+   "I am so proud of who you are.",
+   "You will always be my little boy, no matter how tall you get. I am proud of you every single day.",
+   "Wherever you go, you carry my heart with you. I can't walk the road for you, but I can promise you will never once have to walk it alone."
+  ],
+  "my wife": [
+   "Marrying you was the easiest decision I ever made.",
+   "Every day with you is the day I would choose again. Thank you for choosing me back.",
+   "You are the best thing that has ever happened to me. I can't promise I will always get it right, but I can promise I will never stop choosing you."
+  ],
+  "my husband": [
+   "Thank you for being my safe place.",
+   "You make the hard days easier and the good days better. I love the life we are building.",
+   "You are my best friend and my favorite person in the world. I can't promise every year will be an easy one, but I can promise to spend all of them with you."
+  ],
+  "Mom": [
+   "Thank you for everything, Mom.",
+   "You gave me everything you had and never asked for anything back. I hope you know how loved you are.",
+   "Everything good in me started with you. I can't repay what you gave me, but I can promise to spend my life trying, and to love you the way you loved me."
+  ],
+  "Dad": [
+   "Thank you for everything, Dad.",
+   "You taught me almost everything I know, mostly just by doing it. I hope you know what that meant.",
+   "You showed me what it looks like to do things the right way. I can't be everything you are, but I can promise to keep trying, and to make you proud."
+  ],
+  "Grandma": [
+   "You are my favorite person to be around.",
+   "You have always made me feel completely at home. Thank you for every bit of it.",
+   "You have loved me my whole life without ever making it feel like work. I can't give those years back, but I can promise you will never wonder how loved you are."
+  ],
+  "Grandpa": [
+   "Thank you for every story, Grandpa.",
+   "Nobody has ever made me feel as safe as you do. I hope you know how much I look up to you.",
+   "You have been steady my entire life. I can't tell you everything you have meant to me, but I can promise to pass it on exactly the way you gave it to me."
+  ],
+  "my sister": [
+   "You will always be my person.",
+   "Nobody knows me the way you do, and nobody ever will. Thank you for growing up beside me.",
+   "We have been through all of it together. I can't promise I will always be easy to love, but I can promise there is no version of my life that does not have you in it."
+  ],
+  "my brother": [
+   "Always my brother, always my friend.",
+   "You have had my back since the beginning, and I have never once had to ask you for it.",
+   "There is nobody I would rather have in my corner. I can't say any of this out loud, so I am saying it here: I am proud of you, and I always have been."
+  ],
+  "my girlfriend": [
+   "You are it for me.",
+   "Falling for you is the best thing that has ever happened to me. I would do it again tomorrow.",
+   "You are the best part of my day, every single day. I can't promise to be perfect, but I can promise to keep showing up, and to keep choosing you."
+  ],
+  "my boyfriend": [
+   "You are my favorite hello.",
+   "I feel like the luckiest person alive when I am with you. I hope you never forget that.",
+   "I did not know it could feel like this. I can't promise I will always get it right, but I can promise you will never have to wonder how I feel about you."
+  ],
+  "my best friend": [
+   "Thank you for always showing up.",
+   "You have seen me at my worst and stayed anyway. That is the whole friendship, right there.",
+   "You have been there for every version of me. I can't pay you back for that, but I can promise to be exactly that for you, for as long as you need it."
+  ],
+  "my granddaughter": [
+   "You are so loved, always.",
+   "You changed my life the day you were born, and you have been changing it ever since.",
+   "You have been a gift from the very first day. I can't be there for every step of it, but I can promise that wherever you go, you go with all of my love."
+  ],
+  "my grandson": [
+   "You are so loved, always.",
+   "Watching you grow up has been the great joy of my life. I am so proud of the boy you are.",
+   "You have been a gift from the very first day. I can't be there for every step of it, but I can promise that wherever you go, you go with all of my love."
+  ],
+  "memory": [
+   "Forever loved, never forgotten.",
+   "Not a day goes by that I do not think of you. You are still with me in everything I do.",
+   "I carry you with me every single day. I can't have you here, but I can promise you will never be forgotten, and that I will keep telling them all about you."
+  ],
+  "pet": [
+   "The best memories have paw prints on them.",
+   "They love you more than anything. Now you can keep them close to your heart.",
+   "Thank you for loving them like family. Wear this and think of all the walks, the cuddles, and the wet noses. They&rsquo;re lucky to have you."
+  ],
+  "petmemory": [
+   "Loved, missed, never forgotten.",
+   "They may be gone, but they&rsquo;ll never be far from your heart.",
+   "No matter how much time passes, they&rsquo;ll always be part of the family. Now their name is close to your heart, right where they belong."
+  ],
+  "default": [
+   "You are so loved.",
+   "I saw this and thought of you, which is reason enough. I hope it makes you smile.",
+   "I wanted you to have something to keep. I can't say all of this the way I mean it, but I can promise that every word of it is true, today and every day after."
+  ]
+ }
+}

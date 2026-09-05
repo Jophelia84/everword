@@ -1,0 +1,94 @@
+{% doc %}
+  Personalisation fields for the product form, written as line item properties
+  so they carry through to the order without affecting price.
+
+  Driven by product metafields in the "everword" namespace:
+    personalisation_kind   name | names | engrave | two_line | none
+    personalisation_label  the field label ("Name or word")
+    personalisation_max    max characters per name or line
+
+  @param product {Product} the product being configured
+  @param form_id {String} id of Horizon's buy-buttons form, for the form attribute
+{% enddoc %}
+
+{%- liquid
+  assign kind = product.metafields.everword.personalisation_kind.value | default: 'none'
+  assign label = product.metafields.everword.personalisation_label.value | default: 'Personalisation'
+  assign max = product.metafields.everword.personalisation_max.value | default: 20
+
+  assign count_option = ''
+  for opt in product.options_with_values
+    assign lower = opt.name | downcase
+    if lower == 'names' or lower == 'charms'
+      assign count_option = opt.name
+    endif
+  endfor
+
+  case kind
+    when 'engrave'
+      assign hint = 'Leave it blank if you would rather it stayed plain.'
+    when 'two_line'
+      assign hint = 'Up to ' | append: max | append: ' characters a line, engraved exactly as written.'
+    when 'names'
+      assign hint = 'Up to ' | append: max | append: ' characters per name, one per line. Cut exactly as typed, including capitals. No spaces.'
+    else
+      assign hint = ''
+  endcase
+-%}
+
+{%- unless kind == 'none' -%}
+  <everword-personalisation
+    class="fld"
+    data-kind="{{ kind }}"
+    data-max="{{ max }}"
+    data-hint="{{ hint | escape }}"
+    {% if count_option != blank %}data-count-option="{{ count_option | escape }}"{% endif %}
+  >
+    <label for="ew-pv-{{ product.id }}">{{ label }}</label>
+
+    {%- case kind -%}
+      {%- when 'two_line' -%}
+        <div class="row2">
+          <input
+            type="text"
+            id="ew-pv-{{ product.id }}"
+            name="properties[Line one]" form="{{ form_id }}"
+            data-ew-value
+            maxlength="{{ max }}"
+            placeholder="Line one"
+            autocomplete="off"
+          >
+          <input
+            type="text"
+            name="properties[Line two]" form="{{ form_id }}"
+            data-ew-value-2
+            maxlength="{{ max }}"
+            placeholder="Line two"
+            aria-label="Line two"
+            autocomplete="off"
+          >
+        </div>
+
+      {%- when 'names' -%}
+        <textarea
+          id="ew-pv-{{ product.id }}"
+          name="properties[{{ label }}]" form="{{ form_id }}"
+          data-ew-value
+          placeholder="One name per line"
+        ></textarea>
+
+      {%- else -%}
+        <input
+          type="text"
+          id="ew-pv-{{ product.id }}"
+          name="properties[{{ label }}]" form="{{ form_id }}"
+          data-ew-value
+          maxlength="{{ max }}"
+          placeholder="Up to {{ max }} characters"
+          autocomplete="off"
+        >
+    {%- endcase -%}
+
+    <p class="cnt" data-ew-count aria-live="polite">{{ hint }}</p>
+  </everword-personalisation>
+{%- endunless -%}

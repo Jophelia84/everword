@@ -240,14 +240,29 @@
                 "padding-inline-end": 0
               },
               "blocks": {}
+            },
+            "everword_personalisation": {
+              "type": "everword-personalisation",
+              "settings": {}
+            },
+            "everword_message_card": {
+              "type": "everword-message-card",
+              "settings": {}
+            },
+            "everword_details": {
+              "type": "everword-product-details",
+              "settings": {}
             }
           },
           "block_order": [
             "group_icgrde",
             "divider_VJhene",
             "variant_picker_R3rGDr",
+            "everword_personalisation",
+            "everword_message_card",
             "buy_buttons_eYQEYi",
-            "text_aEtTtq"
+            "text_aEtTtq",
+            "everword_details"
           ]
         },
         "disclosures": {

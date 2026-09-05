@@ -1,0 +1,68 @@
+{% doc %}
+  The free message card. Everything the customer types is written as a line
+  item property, so it reaches the order without touching price.
+
+  The phrase bank lives in assets/everword-cards.json rather than in Liquid:
+  it is 19 recipient sets and would bloat every product render.
+
+  @param product {Product} the product being configured
+  @param form_id {String} id of Horizon's buy-buttons form, for the form attribute
+{% enddoc %}
+
+{%- liquid
+  assign occ = product.metafields.everword.occasions.value | default: 'everyday'
+  assign first_occ = occ | split: ' ' | first
+-%}
+
+<everword-message-card
+  class="fld"
+  data-src="{{ 'everword-cards.json' | asset_url }}"
+  data-occasion="{{ first_occ }}"
+>
+  <label>Your message card</label>
+
+  <details>
+    <summary class="msum">
+      <span class="msumtxt" data-ew-summary>A message card is included, free.</span>
+      <span class="msumdo"></span>
+    </summary>
+
+    <select data-ew-occasion name="properties[Card occasion]" form="{{ form_id }}" aria-label="Occasion" style="margin-bottom:10px"></select>
+
+    <div class="row2 mrow">
+      <div>
+        <label class="sub" for="ew-mto-{{ product.id }}">Who it's for</label>
+        <select id="ew-mto-{{ product.id }}" data-ew-to></select>
+        <input type="text" data-ew-to-other maxlength="22" placeholder="Sarah, or my godmother"
+               style="display:none;margin-top:8px" aria-label="Who it's for">
+        <input type="hidden" name="properties[Card to]" form="{{ form_id }}" data-ew-to-value>
+      </div>
+      <div>
+        <label class="sub" for="ew-mfrom-{{ product.id }}">Signed</label>
+        <input type="text" id="ew-mfrom-{{ product.id }}" name="properties[Card signed]" form="{{ form_id }}"
+               data-ew-from maxlength="24" placeholder="Love, Mom">
+      </div>
+    </div>
+
+    <div class="opts" style="margin-bottom:10px">
+      <button type="button" class="opt" data-ew-mode="own" aria-pressed="false">Write my own</button>
+      <button type="button" class="opt" data-ew-mode="ours" aria-pressed="true">Start from ours</button>
+    </div>
+
+    <div data-ew-pick style="margin-bottom:10px">
+      <select data-ew-preset aria-label="Choose a message"></select>
+    </div>
+
+    <textarea data-ew-message name="properties[Card message]" form="{{ form_id }}" maxlength="200"
+              placeholder="Write what you'd want them to read first."></textarea>
+    <p class="cnt" data-ew-count aria-live="polite">0 / 160</p>
+
+    <div class="cardprev bone" data-ew-preview aria-hidden="true">
+      <svg class="cghost" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path d="M36 0C40 14 44 26 50 34C56 26 60 14 64 0" fill="none" stroke="#C9A961" stroke-width=".4" opacity=".4"/><circle cx="50" cy="41" r="7" fill="none" stroke="#C9A961" stroke-width=".55" opacity=".4"/></svg>
+      <div class="cto" data-ew-preview-to></div>
+      <p data-ew-preview-message></p>
+      <div class="cfr" data-ew-preview-from></div>
+      <span>Everword</span>
+    </div>
+  </details>
+</everword-message-card>

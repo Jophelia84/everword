@@ -1,0 +1,80 @@
+{% doc %}
+  The shipping promises and the three accordions beneath the buy panel.
+
+  Shipping and the "Everword experience" copy are the same on every product, so
+  they are block settings. Specs and care differ per piece, so they come from
+  product metafields (everword.specs and everword.care, both list fields).
+{% enddoc %}
+
+{%- liquid
+  assign product = closest.product
+  if request.visual_preview_mode and product == blank
+    assign product = collections.all.products.first
+  endif
+  assign specs = product.metafields.everword.specs.value
+  assign care = product.metafields.everword.care.value
+-%}
+
+<div class="ew-scope" {{ block.shopify_attributes }}>
+  {%- if block.settings.shipping != blank -%}
+    <ul class="ship">
+      {%- assign lines = block.settings.shipping | newline_to_br | split: '<br />' -%}
+      {%- for line in lines -%}
+        {%- assign trimmed = line | strip -%}
+        {%- if trimmed != blank -%}<li>{{ trimmed }}</li>{%- endif -%}
+      {%- endfor -%}
+    </ul>
+  {%- endif -%}
+
+  <div class="acc">
+    {%- if specs != blank and specs != empty -%}
+      <details open>
+        <summary>{{ block.settings.specs_title }}</summary>
+        <ul>
+          {%- for spec in specs -%}<li>{{ spec }}</li>{%- endfor -%}
+        </ul>
+      </details>
+    {%- endif -%}
+
+    {%- if care != blank and care != empty -%}
+      <details>
+        <summary>{{ block.settings.care_title }}</summary>
+        <ul class="care">
+          {%- for line in care -%}<li>{{ line }}</li>{%- endfor -%}
+        </ul>
+      </details>
+    {%- endif -%}
+
+    {%- if block.settings.experience != blank -%}
+      <details>
+        <summary>{{ block.settings.experience_title }}</summary>
+        <div id="pexp">{{ block.settings.experience }}</div>
+      </details>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Everword product details",
+  "settings": [
+    {
+      "type": "textarea",
+      "id": "shipping",
+      "label": "Shipping promises",
+      "info": "One per line. Basic HTML is allowed.",
+      "default": "<b>Free shipping on every US order.</b> No minimum.\nMade to order — 3–5 business days in production.\nUS delivery 2–5 business days after dispatch. Expedited 1–2 days, $10.\nMade in the USA — laser cut, not printed.\nArrives wrong and we remake it, with no return postage."
+    },
+    { "type": "text", "id": "specs_title", "label": "Specs heading", "default": "Details & craftsmanship" },
+    { "type": "text", "id": "care_title", "label": "Care heading", "default": "Product care guide" },
+    { "type": "text", "id": "experience_title", "label": "Experience heading", "default": "The Everword experience" },
+    {
+      "type": "richtext",
+      "id": "experience",
+      "label": "Experience copy",
+      "default": "<p><strong>Signature gift packaging</strong><br/>Every piece arrives artfully presented in the Signature Everword Box, for elegant storage and care. Beautiful enough to give as it is — no wrapping needed.</p><p><strong>The ultimate reveal</strong><br/>Upgrade to the Mahogany-Style Luxe Box: a polished wood finish with a built-in LED spotlight in the lid, so the piece is lit the moment the box opens.</p><p><strong>A personal touch</strong><br/>A message card comes free with every order, printed on a luxe notecard and set in our own type. Write it on this page and we print exactly that — there is no proof email, so read it once more before you add to bag.</p><p><strong>Made for the moment</strong><br/>Made to order, crafted in the USA, shipped worldwide.</p>"
+    }
+  ],
+  "presets": [{ "name": "Everword product details", "category": "Product" }]
+}
+{% endschema %}
