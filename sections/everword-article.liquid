@@ -1,0 +1,35 @@
+{% doc %}
+  A blog article in the same docpage layout as the content pages.
+{% enddoc %}
+
+<section class="ew-scope docpage" data-testid="everword-article">
+  <div class="wrap">
+    <div class="dochead">
+      <h1>{{ article.title }}</h1>
+      {%- if article.excerpt != blank -%}
+        <p>{{ article.excerpt | strip_html }}</p>
+      {%- endif -%}
+    </div>
+    <div class="docbody">
+      {{ article.content }}
+
+      {%- if section.settings.show_date or article.tags.size > 0 -%}
+        <p class="ded">
+          {%- if section.settings.show_date -%}{{ article.published_at | date: '%e %B %Y' }}{%- endif -%}
+          {%- if article.tags.size > 0 %} · {{ article.tags | join: ', ' }}{% endif -%}
+        </p>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Everword article",
+  "tag": "section",
+  "settings": [
+    { "type": "checkbox", "id": "show_date", "label": "Show the published date", "default": true }
+  ],
+  "enabled_on": { "templates": ["article"] }
+}
+{% endschema %}
