@@ -1,92 +1,57 @@
-# Everword store data
+# Everword store content
 
-The theme renders store data; it cannot contain it. These files carry the 30
-pieces and the 65 content pages out of the v94 standalone build and into
-Shopify. Import them in the order below.
+Products are **not** here — ShineOn's app supplies those. What is here is the
+writing from the standalone build, which has nothing to do with the supplier and
+would otherwise be lost.
 
-## 1. Create the metafield definitions first
+## The content
 
-The product page reads these. Import products *after* defining them, otherwise
-the columns are ignored and the personalisation fields will not appear.
-
-Settings → Custom data → Products → Add definition:
-
-| Namespace and key                  | Type                          | What it drives |
-|------------------------------------|-------------------------------|----------------|
-| `everword.personalisation_kind`    | Single line text              | Which field renders: `name`, `names`, `engrave`, `two_line` or `none` |
-| `everword.personalisation_label`   | Single line text              | The field label, e.g. "Name or word" |
-| `everword.personalisation_max`     | Integer                       | Characters allowed per name or line |
-| `everword.message_card`            | True or false                 | Whether the free message card shows |
-| `everword.occasions`               | Single line text              | Space-separated occasions; seeds the card's occasion |
-| `everword.elevator`                | Single line text              | The short label above the title |
-| `everword.tile_meta`               | Single line text              | The line under the title on a product card |
-| `everword.specs`                   | Single line text, **list**    | "Details & craftsmanship" |
-| `everword.care`                    | Single line text, **list**    | "Product care guide" |
-
-Settings → Custom data → Pages → Add definition:
-
-| Namespace and key    | Type             | What it drives |
-|----------------------|------------------|----------------|
-| `everword.summary`   | Single line text | The standfirst under a page title |
-
-## 2. Import the products
-
-`everword-products.csv` — 30 products, 147 variants.
-
-Products → Import. Finish, Presentation, and Names/Charms/Ring size come in as
-real variant options, because each changes the price. Personalisation text and
-the message card are line item properties instead, set at add-to-cart, so they
-do not multiply variants.
-
-Prices follow the source's own `price()`: base, plus the finish delta, plus the
-box delta, plus `(count − included) × each`. Where an axis had only one value
-the source still added its delta but hid the control, so that delta is folded
-into the base price rather than becoming a pointless one-value option.
-
-**Inventory** is set to `continue` (keep selling when out of stock) with no
-tracker, which is what a made-to-order workshop wants. Change it if you would
-rather track stock.
-
-## 3. Add the product images
-
-`Image Src` is deliberately blank. A theme asset's CDN URL is not known until
-the theme is uploaded, so there was nothing valid to put there.
-
-The shop still renders immediately: every product falls back to the
-`ew-<handle>.webp` bundled in the theme's `assets/`, and all 30 handles have
-one. That fallback is for launch, not for good — real product media gets you
-zoom, variant images, and correct Open Graph tags.
-
-`product-images/` holds the 117 gallery shots named `<handle>_NN.webp`, in
-order. Either drag them onto each product in admin, or upload them to
-Content → Files and add an `Image Src` column pointing at the resulting URLs
-before importing.
-
-## 4. Import the content
-
-- `everword-pages.csv` — 38 pages (policies, guides, our story, materials)
+- `everword-pages.csv` — 38 pages: our story, materials, shipping, returns,
+  care, the message card, the policies, and the guides
 - `everword-blog-articles.csv` — 27 articles, into a blog called **News**
+- `pages/` and `articles/` — the same content as one HTML file each
 
 Create the News blog first (Content → Blog posts → Manage blogs) or the article
 import has nowhere to land.
 
-Both CSVs follow the column layout the common bulk-import apps expect
-(Matrixify and similar). Shopify's built-in importer handles products only, so
-pages and articles need such an app — or use the per-file HTML in `pages/` and
-`articles/`, which is the same content ready to paste into the admin editor.
+Both CSVs follow the column layout the common bulk-import apps expect (Matrixify
+and similar). Shopify's own importer handles products only, so pages and
+articles need such an app — or paste the HTML files into the admin editor.
 
-## 5. Point the navigation at it
+Page standfirsts ride along as an `everword.summary` metafield rather than a
+Summary column, because Shopify pages have no native summary field and a plain
+column would be silently dropped.
 
-The footer columns and the header menu are backed by real Shopify menus, so
-build them under Content → Menus. The source's four footer columns were Shop,
-Occasions, Help and About.
+## Optional: the product metafields
 
-## A note on the collections
+The theme does not need these. Personalisation and the message card are
+configured on the blocks themselves in the theme editor, which is what a
+supplier import wants — set it once for the template rather than per product.
 
-The CSV sets each product's **Type** to its shelf (Names, Engraved, Keepsakes,
-Pendants, For Him, In Memory, A New Baby, Rings, Bracelets) and tags it with its
-occasions (birthday, anniversary, memory, milestone, baby, him, everyday).
+Define these only if you want a specific product to differ from that default:
 
-Smart collections on those conditions reproduce the source's shelves and
-occasion filters without any manual sorting. The home page's six occasion doors
-each want one, and the shelf section wants a collection to draw from.
+| Namespace and key                | Type                       | Overrides |
+|----------------------------------|----------------------------|-----------|
+| `everword.personalisation_kind`  | Single line text           | Which field renders: `name`, `names`, `engrave`, `two_line`, `none` |
+| `everword.personalisation_label` | Single line text           | The field label |
+| `everword.personalisation_max`   | Integer                    | Characters per name or line |
+| `everword.message_card`          | True or false              | Whether the card shows |
+| `everword.occasions`             | Single line text           | Seeds the card's occasion |
+| `everword.tile_meta`             | Single line text           | The line under a product card title |
+| `everword.specs`                 | Single line text, **list** | The "Details & craftsmanship" accordion |
+| `everword.care`                  | Single line text, **list** | The "Product care guide" accordion |
+
+Without `tile_meta`, product cards read the line off whichever option is named
+Finish, Colour, Material, Metal or Plating. Without `specs` or `care`, that
+accordion is simply left out.
+
+## Pointing the personalisation at ShineOn's options
+
+The multi-name field limits how many lines it accepts to whatever the count
+option is set to. It looks for an option named Names, Charms, Quantity of names
+or Number of names. If ShineOn names it something else, either rename it on the
+product or set the count with the metafields above.
+
+Finish, box and size come in from ShineOn as ordinary variant options and need
+nothing from this theme — they price themselves. Personalisation text and the
+message card are line item properties, so they never multiply variants.

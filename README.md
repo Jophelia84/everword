@@ -14,8 +14,9 @@ film, the catalogue and all 65 content pages inlined as base64 and JavaScript.
 | `#shop` view + JS filters | `templates/collection.json` with Shopify's native storefront filters |
 | `#p/<slug>` view | `templates/product.json`, using Horizon's variant picker and cart |
 | `#d/<slug>` views (65 of them) | Shopify pages and blog articles — see `everword-data/` |
-| `window.__P` (30 products) | `everword-data/everword-products.csv`, 147 variants |
-| `window.__IMG` + inline base64 | 426 files in `assets/` |
+| The seven-panel mega menu | `sections/everword-header.liquid`, driven by a Shopify menu |
+| `window.__P` (30 products) | **not carried over** — ShineOn's app supplies the catalogue |
+| Design imagery from the inline base64 | 43 files in `assets/` |
 | `window.__SHIP` / `__EXP` | Settings on the Everword product details block |
 | `window.__PDPX` per-product copy | `everword.*` product metafields |
 | `CARDS` phrase bank | `assets/everword-cards.json` |
@@ -23,11 +24,17 @@ film, the catalogue and all 65 content pages inlined as base64 and JavaScript.
 ## Getting it running
 
 1. Upload `everword-horizon-theme.zip` under Online Store → Themes → Add theme.
-2. Follow `everword-data/README.md` — **metafield definitions before the product
-   import**, or the personalisation fields will not appear.
-3. Build the header and footer menus under Content → Menus.
-4. Create smart collections on product Type and tags to feed the home page's
-   occasion doors and shelf.
+2. Import your products with ShineOn's app. The theme ships with no catalogue.
+3. Build the menus under Content → Menus. The header menu wants **three levels**:
+   top level opens a mega panel, second level are its column headings, third
+   level the links inside them. Point third-level links at collections and they
+   borrow those collections' images for their thumbnails.
+4. In the theme editor, set the personalisation block on the product template —
+   which field, its label, how many characters.
+5. Create collections to feed the home page's occasion doors and its shelf, and
+   pick images for the doors, the about band and the hero.
+6. Optionally import the writing from `everword-data/` — 38 pages and 27
+   articles, none of which comes from ShineOn.
 
 ## Things worth knowing
 
@@ -43,6 +50,12 @@ been falling back to whatever sans the visitor's OS supplies — different on
 every device. It is loaded properly now. If you preferred the old look, change
 the body font in Theme settings → Typography.
 
+**Personalisation is configured on the block, not per product.** ShineOn's
+import will not carry Everword metafields, so the personalisation and message
+card blocks take their settings from the theme editor and treat metafields as a
+per-product override. Set it once on the product template and it applies to
+everything; add a metafield only where a piece needs to differ.
+
 **Personalisation clamping is deliberate.** `assets/everword-personalisation.js`
 folds text to ASCII before it cuts it, because ShineOn cannot cut accents or
 emoji and an unsupported character holds the order. "José" becomes "Jose"
@@ -51,10 +64,10 @@ script-set values and counts UTF-16 units, so an emoji costs two and can be cut
 in half. Spaces are blocked on name fields — a product decision, not a supplier
 rule; set `data-block-spaces="false"` to allow them again.
 
-**Options versus properties.** Finish, Presentation and Names/Charms/Ring size
-change the price, so they are real variant options. Personalisation text and the
-message card do not, so they are line item properties — which keeps 30 products
-at 147 variants instead of many thousands.
+**Options versus properties.** Finish, box and size arrive from ShineOn as
+ordinary variant options and price themselves. Personalisation text and the
+message card are line item properties instead, so they reach the order without
+multiplying variants.
 
 **The hero film.** `assets/ew-hero-film.mp4` and `.webm` ship with the theme, but
 Shopify's asset directory does not reliably accept video. If the upload strips
@@ -67,11 +80,16 @@ earlier versions left behind; no sections were built for them.
 
 ## What was not carried over
 
-Horizon's header is kept rather than the source's. Rebuilding that nav would
-mean reimplementing the cart drawer, predictive search and mobile drawer that
-Horizon already ships working and accessible; the Everword palette and type
-restyle it in place. The mega-menu panels, the wishlist and the search overlay
-are the parts of the source this leaves behind.
+**The catalogue.** No products, and no product photography — ShineOn supplies
+both. Only the 43 design images the sections need are bundled: the hero poster
+and film, the occasion doors, the about band, and the editorial shots.
+
+**The wishlist.** The source kept it in browser storage, which does not survive
+a device change and cannot be read back by the store. It wants a customer
+account or an app rather than a reimplementation, so it was left out.
+
+Horizon's cart drawer and predictive search are reused rather than rebuilt —
+the masthead calls both — because they already work and are accessible.
 
 ## Licence
 

@@ -4,6 +4,11 @@
   Shipping and the "Everword experience" copy are the same on every product, so
   they are block settings. Specs and care differ per piece, so they come from
   product metafields (everword.specs and everword.care, both list fields).
+
+  A product without those metafields simply omits that accordion. The specs one
+  deliberately does not fall back to the product description: the product
+  details section already renders the description above, in the place the
+  source used for its blurb, so falling back would print it twice.
 {% enddoc %}
 
 {%- liquid

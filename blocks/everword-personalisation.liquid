@@ -1,6 +1,12 @@
 {% doc %}
-  Personalisation as a theme block, so it can be dropped into Horizon's product
+  Personalisation as a theme block, so it drops into Horizon's product
   information section alongside the variant picker.
+
+  Configuration is read from the product's everword metafields when it has
+  them, and falls back to this block's own settings when it does not — which is
+  the normal case for products imported from a supplier app. That way the field
+  can be switched on for a whole template without touching every product, and
+  a product that needs different wording can still override it with a metafield.
 
   The fields sit outside Horizon's <form> (which lives inside the buy-buttons
   block), so they are associated with it by the HTML form attribute. FormData
@@ -12,25 +18,68 @@
   if request.visual_preview_mode and product == blank
     assign product = collections.all.products.first
   endif
-  assign kind = product.metafields.everword.personalisation_kind.value | default: 'none'
+
+  assign kind = product.metafields.everword.personalisation_kind.value
+  if kind == blank
+    assign kind = block.settings.kind
+  endif
+
+  assign label = product.metafields.everword.personalisation_label.value
+  if label == blank
+    assign label = block.settings.label
+  endif
+
+  assign max = product.metafields.everword.personalisation_max.value
+  if max == blank
+    assign max = block.settings.max
+  endif
 -%}
 
 {%- if product != blank and kind != 'none' -%}
   <div class="ew-scope" {{ block.shopify_attributes }}>
     {%- assign ew_form_id = 'BuyButtons-ProductForm-' | append: section.id -%}
-    {% render 'everword-personalisation', product: product, form_id: ew_form_id %}
+    {% render 'everword-personalisation',
+       product: product,
+       form_id: ew_form_id,
+       kind: kind,
+       label: label,
+       max: max,
+       block_spaces: block.settings.block_spaces %}
   </div>
   <script src="{{ 'everword-personalisation.js' | asset_url }}" defer="defer"></script>
-{%- elsif request.design_mode -%}
-  <div class="ew-scope" {{ block.shopify_attributes }}>
-    <p class="cnt">This product has no personalisation set. Add an
-      <code>everword.personalisation_kind</code> metafield to switch it on.</p>
-  </div>
 {%- endif -%}
 
 {% schema %}
 {
   "name": "Everword personalisation",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Used when a product has no everword.personalisation_* metafields. A product that has them overrides these."
+    },
+    {
+      "type": "select",
+      "id": "kind",
+      "label": "Field",
+      "options": [
+        { "value": "none", "label": "None" },
+        { "value": "name", "label": "A name or word" },
+        { "value": "names", "label": "Several names, one per line" },
+        { "value": "engrave", "label": "Engraving (optional)" },
+        { "value": "two_line", "label": "Two lines" }
+      ],
+      "default": "none"
+    },
+    { "type": "text", "id": "label", "label": "Label", "default": "Name or word" },
+    { "type": "range", "id": "max", "label": "Characters allowed", "min": 4, "max": 60, "step": 1, "default": 11 },
+    {
+      "type": "checkbox",
+      "id": "block_spaces",
+      "label": "Block spaces in names",
+      "default": true,
+      "info": "Off allows \"Mary Jane\". On suggests a capital instead: DogMom."
+    }
+  ],
   "presets": [{ "name": "Everword personalisation", "category": "Product" }]
 }
 {% endschema %}

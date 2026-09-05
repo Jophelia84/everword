@@ -2,24 +2,35 @@
   Personalisation fields for the product form, written as line item properties
   so they carry through to the order without affecting price.
 
-  Driven by product metafields in the "everword" namespace:
-    personalisation_kind   name | names | engrave | two_line | none
-    personalisation_label  the field label ("Name or word")
-    personalisation_max    max characters per name or line
+  The caller resolves the configuration — product metafields first, then the
+  block's own settings — and passes it in, so this snippet renders whatever it
+  is given rather than knowing where the values came from.
 
   @param product {Product} the product being configured
   @param form_id {String} id of Horizon's buy-buttons form, for the form attribute
+  @param kind {String} name | names | engrave | two_line | none
+  @param label {String} the field label
+  @param max {Number} characters allowed per name or line
+  @param block_spaces {Boolean} whether spaces are stripped from name fields
 {% enddoc %}
 
 {%- liquid
-  assign kind = product.metafields.everword.personalisation_kind.value | default: 'none'
-  assign label = product.metafields.everword.personalisation_label.value | default: 'Personalisation'
-  assign max = product.metafields.everword.personalisation_max.value | default: 20
+  assign kind = kind | default: 'none'
+  assign label = label | default: 'Personalisation'
+  assign max = max | default: 20
+  if block_spaces == nil
+    assign block_spaces = true
+  endif
 
+  comment
+    The line-count allowance for a multi-name field tracks whichever variant
+    option carries the count, so lowering the count drops the extra lines.
+  endcomment
   assign count_option = ''
+  assign count_names = 'names,charms,quantity of names,number of names'
   for opt in product.options_with_values
-    assign lower = opt.name | downcase
-    if lower == 'names' or lower == 'charms'
+    assign lower = opt.name | downcase | strip
+    if count_option == blank and count_names contains lower
       assign count_option = opt.name
     endif
   endfor
@@ -30,7 +41,10 @@
     when 'two_line'
       assign hint = 'Up to ' | append: max | append: ' characters a line, engraved exactly as written.'
     when 'names'
-      assign hint = 'Up to ' | append: max | append: ' characters per name, one per line. Cut exactly as typed, including capitals. No spaces.'
+      assign hint = 'Up to ' | append: max | append: ' characters per name, one per line. Cut exactly as typed, including capitals.'
+      if block_spaces
+        assign hint = hint | append: ' No spaces.'
+      endif
     else
       assign hint = ''
   endcase
@@ -42,6 +56,7 @@
     data-kind="{{ kind }}"
     data-max="{{ max }}"
     data-hint="{{ hint | escape }}"
+    data-block-spaces="{{ block_spaces }}"
     {% if count_option != blank %}data-count-option="{{ count_option | escape }}"{% endif %}
   >
     <label for="ew-pv-{{ product.id }}">{{ label }}</label>

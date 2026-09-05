@@ -1,6 +1,10 @@
 {% doc %}
-  The free message card, as a theme block for Horizon's product page.
-  Its inputs associate with the buy-buttons form by id, same as personalisation.
+  The free message card, as a theme block for the product page.
+
+  Shown when the product's everword.message_card metafield says so, or — for
+  products imported from a supplier app, which carry no such metafield — when
+  this block is set to show it by default. Its inputs associate with the
+  buy-buttons form by id, same as personalisation.
 {% enddoc %}
 
 {%- liquid
@@ -8,7 +12,13 @@
   if request.visual_preview_mode and product == blank
     assign product = collections.all.products.first
   endif
-  assign enabled = product.metafields.everword.message_card.value
+
+  assign flag = product.metafields.everword.message_card
+  if flag == blank
+    assign enabled = block.settings.show_by_default
+  else
+    assign enabled = flag.value
+  endif
 -%}
 
 {%- if product != blank and enabled -%}
@@ -17,16 +27,20 @@
     {% render 'everword-message-card', product: product, form_id: ew_form_id %}
   </div>
   <script src="{{ 'everword-message-card.js' | asset_url }}" defer="defer"></script>
-{%- elsif request.design_mode -%}
-  <div class="ew-scope" {{ block.shopify_attributes }}>
-    <p class="cnt">This product has no message card. Set the
-      <code>everword.message_card</code> metafield to true to switch it on.</p>
-  </div>
 {%- endif -%}
 
 {% schema %}
 {
   "name": "Everword message card",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_by_default",
+      "label": "Show on products without the metafield",
+      "default": true,
+      "info": "A product's everword.message_card metafield overrides this when it is set."
+    }
+  ],
   "presets": [{ "name": "Everword message card", "category": "Product" }]
 }
 {% endschema %}
