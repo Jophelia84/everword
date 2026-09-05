@@ -1,0 +1,47 @@
+{% doc %}
+  Emits the Everword design tokens the ported v94 stylesheet reads, sourced
+  from theme settings so the theme editor still drives the palette.
+
+  A note on the names: the source stylesheet defined :root twice. The second
+  block (line 405 of the standalone build) superseded the first and inverted
+  the palette from dark to light without renaming the variables. So --ink is
+  the warm-white page ground and --cream is the near-black text, not the other
+  way round. The names are kept as-is so the 1200 lines of ported CSS did not
+  have to be rewritten.
+{% enddoc %}
+
+{%- liquid
+  assign paper = settings.color_palette.background
+  assign text = settings.color_palette.foreground
+  assign navy = settings.color_palette.color1
+  assign gold = settings.color_palette.color2
+  assign tile = settings.color_palette.color3
+-%}
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Prata&family=Alegreya+Sans:wght@300;400&family=Jost:wght@300;400&display=swap">
+
+{% style %}
+  :root {
+    --ink: {{ paper }};
+    --ink-2: {{ navy }};
+    --cream: {{ text }};
+    --cream-dim: rgb({{ text.rgb }} / 0.66);
+    --gold: {{ gold }};
+    --line: rgb({{ text.rgb }} / 0.14);
+    --nav-bg: {{ paper }};
+    --tile: {{ tile }};
+    --mute: rgb({{ text.rgb }} / 0.66);
+    --display: 'Cormorant Garamond', Georgia, serif;
+    --ew-hero-poster: url({{ 'ew-inline-689653544f.webp' | asset_url }});
+    --navh: 96px;
+  }
+  body {
+    font-family: 'Jost', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+    font-weight: 300;
+    -webkit-font-smoothing: antialiased;
+  }
+{% endstyle %}
+
+{{ 'everword.css' | asset_url | stylesheet_tag }}
