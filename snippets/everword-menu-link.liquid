@@ -1,0 +1,35 @@
+{% doc %}
+  One link inside a mega-menu column, with its thumbnail.
+
+  The image is borrowed from whatever the link points at — a collection's or
+  product's own featured image — so the menu icons need no separate upload and
+  never go stale when the merchandising changes.
+
+  @param link {link} a Shopify menu link
+{% enddoc %}
+
+{%- liquid
+  assign thumb = null
+  case link.type
+    when 'collection_link'
+      assign thumb = link.object.featured_image
+    when 'product_link'
+      assign thumb = link.object.featured_media.preview_image
+    when 'article_link'
+      assign thumb = link.object.image
+  endcase
+-%}
+
+<a href="{{ link.url }}">
+  {%- if thumb -%}
+    <img
+      alt=""
+      aria-hidden="true"
+      loading="lazy"
+      width="72"
+      height="72"
+      src="{{ thumb | image_url: width: 72, height: 72, crop: 'center' }}"
+    >
+  {%- endif -%}
+  <span>{{ link.title }}</span>
+</a>

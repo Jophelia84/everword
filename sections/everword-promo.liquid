@@ -1,0 +1,49 @@
+{% doc %}
+  The promo bar above the masthead. With more than one message it cycles them,
+  which is what the source's ticker did.
+{% enddoc %}
+
+<div class="ew-scope promo" data-testid="everword-promo">
+  <span class="tk" data-ew-ticker data-interval="{{ section.settings.interval }}">
+    {%- for block in section.blocks -%}
+      <i class="{% if forloop.first %}on{% endif %}" {{ block.shopify_attributes }}>{{ block.settings.text }}</i>
+    {%- endfor -%}
+  </span>
+  {%- if section.settings.cta_label != blank -%}
+    <a href="{{ section.settings.cta_link | default: routes.all_products_collection_url }}">{{ section.settings.cta_label }}</a>
+  {%- endif -%}
+</div>
+
+{%- if section.blocks.size > 1 -%}
+  <script>
+    (function () {
+      document.querySelectorAll('[data-ew-ticker]').forEach(function (tk) {
+        var items = tk.querySelectorAll('i');
+        if (items.length < 2) return;
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        var i = 0;
+        setInterval(function () {
+          items[i].classList.remove('on');
+          i = (i + 1) % items.length;
+          items[i].classList.add('on');
+        }, Math.max(2000, parseInt(tk.dataset.interval, 10) * 1000 || 5000));
+      });
+    })();
+  </script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Everword promo bar",
+  "settings": [
+    { "type": "range", "id": "interval", "label": "Seconds per message", "min": 2, "max": 12, "step": 1, "default": 5 },
+    { "type": "text", "id": "cta_label", "label": "Link label", "default": "Shop now" },
+    { "type": "url", "id": "cta_link", "label": "Link" }
+  ],
+  "blocks": [
+    { "type": "message", "name": "Message", "settings": [{ "type": "text", "id": "text", "label": "Text", "default": "Every piece arrives boxed, ready to gift" }] }
+  ],
+  "max_blocks": 6,
+  "enabled_on": { "groups": ["header"] }
+}
+{% endschema %}

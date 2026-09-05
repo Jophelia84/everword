@@ -1,0 +1,245 @@
+{% doc %}
+  The Everword masthead: a utilities row, the centred wordmark, and the prime
+  row whose items open full-width mega panels.
+
+  The panels are built from a Shopify menu three levels deep, so the navigation
+  is edited under Content → Menus rather than in this file:
+
+    top level    the prime row item, and the panel it opens
+    second level a column heading inside that panel
+    third level  the links in that column
+
+  A third-level link that points at a collection or product borrows that
+  object's image for its thumbnail, which is why the icons need no uploading.
+  The two promotional cards beside each panel are blocks, matched to a panel by
+  name.
+
+  Cart and search reuse Horizon's own components — the cart drawer and the
+  predictive search modal — rather than reimplementing either.
+{% enddoc %}
+
+{%- liquid
+  assign menu = section.settings.menu
+  assign show_cart = false
+  if settings.cart_type == 'drawer' and template.name != 'cart'
+    assign show_cart = true
+  endif
+-%}
+
+{% render 'search-modal' %}
+
+{%- comment -%}
+  Horizon's own cart components: <cart-icon> and the bubble render the count,
+  header-actions.js announces changes to screen readers. Horizon's header
+  snippet normally loads these, and this header replaces that snippet.
+{%- endcomment -%}
+<script type="module" src="{{ 'cart-icon.js' | asset_url }}" fetchpriority="low"></script>
+<script type="module" src="{{ 'header-actions.js' | asset_url }}" fetchpriority="low"></script>
+
+<everword-header class="ew-scope" data-testid="everword-header">
+  <nav class="ew-nav">
+    <div class="mtoprow">
+      <span class="mutil">
+        {%- if section.settings.contact_page != blank -%}
+          <a href="{{ section.settings.contact_page.url }}" aria-label="Contact us" title="Contact us">
+            {% render 'everword-icon', name: 'bell' %}
+          </a>
+        {%- endif -%}
+
+        {%- if section.settings.show_account -%}
+          <a href="{{ routes.account_url }}" aria-label="My account" title="My account">
+            {% render 'everword-icon', name: 'account' %}
+          </a>
+        {%- endif -%}
+
+        <header-actions>
+          {%- if show_cart -%}
+            <button
+              type="button"
+              on:click="#cart-drawer/toggle"
+              aria-haspopup="dialog"
+              aria-expanded="false"
+              aria-controls="cart-drawer"
+              aria-label="{{ 'accessibility.cart' | t }}"
+              data-testid="cart-drawer-trigger"
+            >
+              <cart-icon>
+                {% render 'everword-icon', name: 'bag' %}
+                {% render 'cart-bubble', limit: 100 %}
+              </cart-icon>
+            </button>
+          {%- else -%}
+            <a href="{{ routes.cart_url }}" aria-label="{{ 'accessibility.cart' | t }}">
+              <cart-icon>
+                {% render 'everword-icon', name: 'bag' %}
+                {% render 'cart-bubble', limit: 100 %}
+              </cart-icon>
+            </a>
+          {%- endif -%}
+          <span ref="liveRegion" class="visually-hidden" role="status"></span>
+        </header-actions>
+      </span>
+    </div>
+
+    <div class="mtop">
+      <button class="burger" type="button" data-ew-open="nav" aria-expanded="false"
+              aria-controls="ew-nav-drawer" aria-label="Menu">
+        {% render 'everword-icon', name: 'burger' %}
+      </button>
+
+      <a class="brand" href="{{ routes.root_url }}">
+        {%- if section.settings.logo != blank -%}
+          {%- assign logo = section.settings.logo -%}
+          <img src="{{ logo | image_url: width: 600 }}" alt="{{ shop.name | escape }}"
+               width="{{ logo.width }}" height="{{ logo.height }}"
+               style="height:{{ settings.logo_height }}px;width:auto;margin:0 auto">
+        {%- else -%}
+          <span class="wm">{{ section.settings.wordmark | default: shop.name }}</span>
+        {%- endif -%}
+        {%- if section.settings.tagline != blank -%}
+          <span class="tag">{{ section.settings.tagline }}</span>
+        {%- endif -%}
+      </a>
+
+      <span class="mact">
+        <button type="button" on:click="#search-modal/showDialog" aria-label="Search">
+          {% render 'everword-icon', name: 'search' %}
+        </button>
+        {%- if show_cart -%}
+          <button type="button" on:click="#cart-drawer/toggle" aria-controls="cart-drawer"
+                  aria-label="{{ 'accessibility.cart' | t }}">
+            {% render 'everword-icon', name: 'bag' %}
+          </button>
+        {%- endif -%}
+      </span>
+    </div>
+
+    <div class="prime">
+      {%- for link in menu.links -%}
+        <a
+          class="pitem"
+          href="{{ link.url }}"
+          {% if link.links.size > 0 %}data-ew-mega="{{ forloop.index }}" aria-expanded="false" aria-controls="ew-mega-{{ forloop.index }}"{% endif %}
+        >{{ link.title }}</a>
+      {%- endfor -%}
+      <span class="pdiv"></span>
+      <button class="pitem psearch" type="button" on:click="#search-modal/showDialog">
+        {% render 'everword-icon', name: 'search' %}
+        <span>Search</span>
+      </button>
+    </div>
+
+    {%- for link in menu.links -%}
+      {%- if link.links.size > 0 -%}
+        {%- liquid
+          assign features = ''
+          for block in section.blocks
+            assign wanted = block.settings.panel | downcase | strip
+            assign here = link.title | downcase | strip
+            if wanted == here
+              assign features = features | append: block.id | append: ','
+            endif
+          endfor
+        -%}
+        <div class="mega" id="ew-mega-{{ forloop.index }}" data-ew-panel="{{ forloop.index }}" hidden>
+          <div class="megain">
+            <p class="megatitle">{{ link.title }}</p>
+            <div class="megagrid{% if features == blank %} wide{% endif %}">
+              <div class="mcols">
+                {%- for column in link.links -%}
+                  <div>
+                    <h4>{{ column.title }}</h4>
+                    {%- if column.links.size > 0 -%}
+                      {%- for item in column.links -%}
+                        {% render 'everword-menu-link', link: item %}
+                      {%- endfor -%}
+                    {%- else -%}
+                      {% render 'everword-menu-link', link: column %}
+                    {%- endif -%}
+                  </div>
+                {%- endfor -%}
+              </div>
+
+              {%- if features != blank -%}
+                <div class="feat">
+                  {%- for block in section.blocks -%}
+                    {%- assign token = block.id | append: ',' -%}
+                    {%- if features contains token -%}
+                      <a href="{{ block.settings.link | default: link.url }}" {{ block.shopify_attributes }}>
+                        {%- if block.settings.image != blank -%}
+                          {%- assign fi = block.settings.image -%}
+                          <img src="{{ fi | image_url: width: 600 }}" alt="{{ block.settings.label | escape }}"
+                               loading="lazy" width="{{ fi.width }}" height="{{ fi.height }}">
+                        {%- endif -%}
+                        <b>{{ block.settings.label }}</b>
+                      </a>
+                    {%- endif -%}
+                  {%- endfor -%}
+                </div>
+              {%- endif -%}
+            </div>
+          </div>
+        </div>
+      {%- endif -%}
+    {%- endfor -%}
+  </nav>
+
+  <div class="scrim" data-ew-scrim hidden></div>
+
+  <div class="dwr mdwr" id="ew-nav-drawer" role="dialog" aria-modal="true"
+       aria-label="Menu" hidden>
+    <button class="x" type="button" data-ew-close aria-label="Close">&times;</button>
+    <h3>Menu</h3>
+    <ul class="mnav">
+      {%- for link in menu.links -%}
+        <li{% if link.links.size > 0 %} class="msec"{% endif %}>
+          {%- if link.links.size > 0 -%}
+            <a class="mhead" href="{{ link.url }}">{{ link.title }}</a>
+            <button class="mtog" type="button" aria-expanded="false"
+                    aria-label="Show {{ link.title | escape }}"><em>+</em></button>
+            <ul>
+              {%- for column in link.links -%}
+                <li><a href="{{ column.url }}">{{ column.title }}</a></li>
+                {%- for item in column.links -%}
+                  <li><a href="{{ item.url }}">{{ item.title }}</a></li>
+                {%- endfor -%}
+              {%- endfor -%}
+            </ul>
+          {%- else -%}
+            <a class="flat" href="{{ link.url }}">{{ link.title }}</a>
+          {%- endif -%}
+        </li>
+      {%- endfor -%}
+    </ul>
+  </div>
+</everword-header>
+
+<script src="{{ 'everword-header.js' | asset_url }}" defer="defer"></script>
+
+{% schema %}
+{
+  "name": "Everword header",
+  "settings": [
+    { "type": "link_list", "id": "menu", "label": "Menu", "default": "main-menu", "info": "Three levels deep: top level opens a panel, second level are its column headings, third level the links in each column." },
+    { "type": "image_picker", "id": "logo", "label": "Logo", "info": "Leave blank to set the wordmark in type." },
+    { "type": "text", "id": "wordmark", "label": "Wordmark", "default": "Everword" },
+    { "type": "text", "id": "tagline", "label": "Tagline" },
+    { "type": "checkbox", "id": "show_account", "label": "Show the account link", "default": true },
+    { "type": "page", "id": "contact_page", "label": "Contact page" }
+  ],
+  "blocks": [
+    {
+      "type": "feature",
+      "name": "Panel feature card",
+      "settings": [
+        { "type": "text", "id": "panel", "label": "Panel", "info": "The top-level menu item this card belongs beside, spelled exactly as in the menu." },
+        { "type": "image_picker", "id": "image", "label": "Image" },
+        { "type": "text", "id": "label", "label": "Label" },
+        { "type": "url", "id": "link", "label": "Link" }
+      ]
+    }
+  ],
+  "max_blocks": 20,
+  "enabled_on": { "groups": ["header"] }
+}
+{% endschema %}
