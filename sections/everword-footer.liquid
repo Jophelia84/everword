@@ -1,0 +1,116 @@
+{% doc %}
+  The Everword footer: four link columns, the Everword+ signup, socials, legal.
+  Columns are blocks backed by real navigation menus.
+{% enddoc %}
+
+<footer class="ew-scope ew-foot" data-testid="everword-footer">
+  <div class="wrap foot">
+    <div class="fcols">
+      {%- for block in section.blocks -%}
+        {%- assign menu = block.settings.menu -%}
+        <div {{ block.shopify_attributes }}>
+          <h4>{{ block.settings.title | default: menu.title }}</h4>
+          {%- for link in menu.links -%}
+            <a href="{{ link.url }}">{{ link.title }}</a>
+          {%- endfor -%}
+        </div>
+      {%- endfor -%}
+    </div>
+
+    {%- if section.settings.show_newsletter -%}
+      <section class="nlet" aria-labelledby="nlet-h-{{ section.id }}">
+        <div class="nlet-in">
+          <div class="nlet-copy">
+            <h4 id="nlet-h-{{ section.id }}">{{ section.settings.newsletter_heading }}</h4>
+            {%- if section.settings.newsletter_body != blank -%}
+              <p>{{ section.settings.newsletter_body }}</p>
+            {%- endif -%}
+          </div>
+          {%- form 'customer', class: 'nlet-form' -%}
+            <input type="hidden" name="contact[tags]" value="newsletter">
+            <label class="vh" for="nlet-e-{{ section.id }}">Email address</label>
+            <input
+              id="nlet-e-{{ section.id }}"
+              type="email"
+              name="contact[email]"
+              inputmode="email"
+              autocomplete="email"
+              placeholder="Email address"
+              required
+            >
+            <button type="submit">{{ section.settings.newsletter_button | default: 'Join' }}</button>
+            {%- if form.posted_successfully? -%}
+              <p class="nlet-note" role="status">Thank you — you’re on the list.</p>
+            {%- elsif form.errors -%}
+              <p class="nlet-note" role="alert">{{ form.errors.messages.email }}</p>
+            {%- endif -%}
+          {%- endform -%}
+        </div>
+        {%- if section.settings.newsletter_note != blank -%}
+          <p class="nlet-note">{{ section.settings.newsletter_note }}</p>
+        {%- endif -%}
+      </section>
+    {%- endif -%}
+
+    {%- if section.settings.social_menu != blank -%}
+      <div class="fsoc">
+        {%- for link in section.settings.social_menu.links -%}
+          <a href="{{ link.url }}">{{ link.title }}</a>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+    <div class="legal">
+      <span>&copy; {{ 'now' | date: '%Y' }} {{ shop.name }}</span>
+      {%- if section.settings.legal_menu != blank -%}
+        {%- for link in section.settings.legal_menu.links -%}
+          <a href="{{ link.url }}">{{ link.title }}</a>
+        {%- endfor -%}
+      {%- endif -%}
+      <span class="sp">{{ localization.country.name }} &middot; {{ cart.currency.iso_code }}</span>
+    </div>
+
+    {%- if section.settings.dedication != blank -%}
+      <p class="ded">{{ section.settings.dedication }}</p>
+    {%- endif -%}
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Everword footer",
+  "settings": [
+    { "type": "checkbox", "id": "show_newsletter", "label": "Show the Everword+ signup", "default": true },
+    { "type": "text", "id": "newsletter_heading", "label": "Signup heading", "default": "Join Everword+" },
+    { "type": "textarea", "id": "newsletter_body", "label": "Signup body", "default": "Free to join. Special offers, new launches, styling tips and care guides — and nothing else." },
+    { "type": "text", "id": "newsletter_button", "label": "Signup button", "default": "Join" },
+    { "type": "text", "id": "newsletter_note", "label": "Signup note", "default": "Leave whenever you like — every email has a one-click unsubscribe." },
+    { "type": "link_list", "id": "social_menu", "label": "Social links" },
+    { "type": "link_list", "id": "legal_menu", "label": "Legal links" },
+    { "type": "text", "id": "dedication", "label": "Dedication", "default": "For Faye." }
+  ],
+  "blocks": [
+    {
+      "type": "column",
+      "name": "Link column",
+      "settings": [
+        { "type": "text", "id": "title", "label": "Heading" },
+        { "type": "link_list", "id": "menu", "label": "Menu" }
+      ]
+    }
+  ],
+  "max_blocks": 5,
+  "presets": [
+    {
+      "name": "Everword footer",
+      "category": "Everword",
+      "blocks": [
+        { "type": "column", "settings": { "title": "Shop" } },
+        { "type": "column", "settings": { "title": "Occasions" } },
+        { "type": "column", "settings": { "title": "Help" } },
+        { "type": "column", "settings": { "title": "About" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

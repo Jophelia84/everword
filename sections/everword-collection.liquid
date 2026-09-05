@@ -1,0 +1,84 @@
+{% doc %}
+  Collection listing in Everword's tile grid, with Shopify's native storefront
+  filters and sorting. Filtering posts the form, which keeps it working without
+  JavaScript; Horizon's own facets script is not reused because the markup here
+  is the source's, not Horizon's.
+{% enddoc %}
+
+{%- paginate collection.products by section.settings.per_page -%}
+  <div class="ew-scope">
+    <div class="wrap">
+      <div class="allhead">
+        <h1>{{ collection.title }}</h1>
+        {%- if collection.description != blank -%}
+          <p>{{ collection.description | strip_html | truncatewords: 40 }}</p>
+        {%- endif -%}
+      </div>
+
+      {%- if section.settings.show_filters and collection.filters.size > 0 -%}
+        <div class="chips">
+          {%- for filter in collection.filters -%}
+            {%- if filter.type == 'list' -%}
+              {%- for value in filter.values -%}
+                {%- comment -%}
+                  url_to_add / url_to_remove carry every other active filter with
+                  them, so toggling one facet does not silently drop the rest.
+                {%- endcomment -%}
+                {%- if value.count > 0 or value.active -%}
+                  {%- liquid
+                    assign facet_url = value.url_to_add
+                    if value.active
+                      assign facet_url = value.url_to_remove
+                    endif
+                  -%}
+                  <a href="{{ facet_url }}" aria-pressed="{{ value.active }}">{{ value.label }}</a>
+                {%- endif -%}
+              {%- endfor -%}
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+
+      <p class="count">
+        {{ collection.products_count }}
+        {%- if collection.products_count == 1 %} piece{% else %} pieces{% endif -%}
+        {%- if current_tags or collection.current_type or collection.current_vendor %} shown{% endif -%}
+      </p>
+
+      {%- if collection.products.size > 0 -%}
+        <div class="ew-grid">
+          {%- for product in collection.products -%}
+            {%- liquid
+              assign loading = 'lazy'
+              if forloop.index0 < 4
+                assign loading = 'eager'
+              endif
+            -%}
+            {% render 'everword-tile', product: product, loading: loading %}
+          {%- endfor -%}
+        </div>
+      {%- else -%}
+        <p class="count">Nothing here yet. <a href="{{ routes.all_products_collection_url }}">See everything</a>.</p>
+      {%- endif -%}
+
+      {%- if paginate.pages > 1 -%}
+        <div class="seeall">
+          {%- if paginate.previous -%}<a href="{{ paginate.previous.url }}">Previous</a>{%- endif -%}
+          {%- if paginate.next -%}<a href="{{ paginate.next.url }}">Next</a>{%- endif -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+{%- endpaginate -%}
+
+{% schema %}
+{
+  "name": "Everword collection",
+  "tag": "section",
+  "settings": [
+    { "type": "range", "id": "per_page", "label": "Pieces per page", "min": 8, "max": 48, "step": 4, "default": 24 },
+    { "type": "checkbox", "id": "show_filters", "label": "Show filters", "default": true }
+  ],
+  "enabled_on": { "templates": ["collection"] }
+}
+{% endschema %}
