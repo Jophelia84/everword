@@ -1,0 +1,54 @@
+{% doc %}
+  A shelf: heading, optional standfirst, and a grid of Everword tiles drawn
+  from a collection.
+{% enddoc %}
+
+{%- liquid
+  assign coll = section.settings.collection
+  assign limit = section.settings.count
+  assign cols = section.settings.columns
+-%}
+
+<section class="ew-scope shelf wrap" data-testid="everword-shelf">
+  {%- if section.settings.heading != blank or section.settings.body != blank -%}
+    <div class="head">
+      {% if section.settings.heading != blank %}<h2>{{ section.settings.heading }}</h2>{% endif %}
+      {% if section.settings.body != blank %}<p>{{ section.settings.body }}</p>{% endif %}
+    </div>
+  {%- endif -%}
+
+  {%- if coll != blank and coll.products.size > 0 -%}
+    <div class="ew-grid{% if cols == '3' %} three{% endif %}">
+      {%- for product in coll.products limit: limit -%}
+        {% render 'everword-tile', product: product, loading: 'lazy' %}
+      {%- endfor -%}
+    </div>
+
+    {%- if section.settings.show_see_all -%}
+      <div class="seeall">
+        <a href="{{ coll.url }}">{{ section.settings.see_all_label | default: 'See all' }}</a>
+      </div>
+    {%- endif -%}
+  {%- else -%}
+    {%- if request.design_mode -%}
+      <p class="count">Pick a collection for this shelf.</p>
+    {%- endif -%}
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "Everword shelf",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Popular right now" },
+    { "type": "textarea", "id": "body", "label": "Standfirst" },
+    { "type": "collection", "id": "collection", "label": "Collection" },
+    { "type": "range", "id": "count", "label": "Pieces to show", "min": 2, "max": 12, "step": 1, "default": 3 },
+    { "type": "select", "id": "columns", "label": "Columns", "options": [{ "value": "3", "label": "Three" }, { "value": "4", "label": "Four" }], "default": "3" },
+    { "type": "checkbox", "id": "show_see_all", "label": "Show the see-all link", "default": true },
+    { "type": "text", "id": "see_all_label", "label": "See-all label", "default": "See the collection" }
+  ],
+  "presets": [{ "name": "Everword shelf", "category": "Everword" }]
+}
+{% endschema %}

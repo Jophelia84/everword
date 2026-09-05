@@ -1,0 +1,56 @@
+{% doc %}
+  The four promises, ruled above and below. Icons are picked from a small set
+  drawn to the same 24x24 grid and 1px stroke as the source.
+{% enddoc %}
+
+<section class="ew-scope promise wrap" data-testid="everword-promise">
+  <div class="row">
+    {%- for block in section.blocks -%}
+      <div class="c" {{ block.shopify_attributes }}>
+        {% render 'everword-icon', name: block.settings.icon %}
+        <span>{{ block.settings.label }}</span>
+      </div>
+    {%- endfor -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Everword promise row",
+  "tag": "section",
+  "blocks": [
+    {
+      "type": "promise",
+      "name": "Promise",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "globe", "label": "Globe" },
+            { "value": "sparkle", "label": "Sparkle" },
+            { "value": "gift", "label": "Gift" },
+            { "value": "knot", "label": "Knot" }
+          ],
+          "default": "globe"
+        },
+        { "type": "text", "id": "label", "label": "Label", "default": "Ships Worldwide" }
+      ]
+    }
+  ],
+  "max_blocks": 6,
+  "presets": [
+    {
+      "name": "Everword promise row",
+      "category": "Everword",
+      "blocks": [
+        { "type": "promise", "settings": { "icon": "globe", "label": "Ships Worldwide" } },
+        { "type": "promise", "settings": { "icon": "sparkle", "label": "Made to Order" } },
+        { "type": "promise", "settings": { "icon": "gift", "label": "Lovingly Packaged" } },
+        { "type": "promise", "settings": { "icon": "knot", "label": "Made to Be Kept" } }
+      ]
+    }
+  ]
+}
+{% endschema %}

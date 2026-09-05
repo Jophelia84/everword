@@ -1,0 +1,70 @@
+{% doc %}
+  The Everword product tile. Second image cross-fades in on hover, which is how
+  the standalone build showed the alternate finish.
+
+  @param product {Product} the product to render
+  @param loading {String} img loading attribute, defaults to lazy
+  @param sizes {String} img sizes attribute
+{% enddoc %}
+
+{%- liquid
+  assign img = product.featured_media.preview_image
+  assign alt_img = null
+  if product.media.size > 1
+    assign alt_img = product.media[1].preview_image
+  endif
+
+  assign meta = product.metafields.everword.tile_meta.value
+  if meta == blank
+    assign finish_option = null
+    for opt in product.options_with_values
+      assign opt_name = opt.name | downcase
+      if opt_name == 'finish'
+        assign finish_option = opt
+      endif
+    endfor
+    if finish_option
+      assign meta = finish_option.values | join: ' or '
+    endif
+  endif
+
+  assign card_sizes = sizes | default: '(max-width: 760px) 50vw, (max-width: 1040px) 33vw, 25vw'
+-%}
+
+<a class="tile" href="{{ product.url }}" data-k="{{ product.handle }}">
+  <div class="shot">
+    {%- if img -%}
+      <img
+        alt="{{ img.alt | default: product.title | escape }}"
+        loading="{{ loading | default: 'lazy' }}"
+        width="{{ img.width }}"
+        height="{{ img.height }}"
+        src="{{ img | image_url: width: 800 }}"
+        srcset="{{ img | image_url: width: 400 }} 400w, {{ img | image_url: width: 800 }} 800w, {{ img | image_url: width: 1200 }} 1200w"
+        sizes="{{ card_sizes }}"
+      >
+      {%- if alt_img -%}
+        <img
+          class="alt"
+          alt=""
+          aria-hidden="true"
+          loading="lazy"
+          width="{{ alt_img.width }}"
+          height="{{ alt_img.height }}"
+          src="{{ alt_img | image_url: width: 800 }}"
+          srcset="{{ alt_img | image_url: width: 400 }} 400w, {{ alt_img | image_url: width: 800 }} 800w"
+          sizes="{{ card_sizes }}"
+        >
+      {%- endif -%}
+    {%- endif -%}
+  </div>
+  <h3>{{ product.title }}</h3>
+  {%- if meta != blank -%}<p class="meta">{{ meta }}</p>{%- endif -%}
+  <p class="price">
+    {%- if product.price_varies -%}
+      From {{ product.price_min | money }}
+    {%- else -%}
+      {{ product.price | money }}
+    {%- endif -%}
+  </p>
+</a>

@@ -1,0 +1,68 @@
+{% doc %}
+  The v94 film hero: a muted, looping film behind left-aligned copy.
+
+  The video is a theme setting rather than a hard-coded asset because Shopify's
+  asset directory does not reliably accept video uploads. It defaults to the
+  files extracted from the standalone build; point it at a Shopify Files URL
+  instead if the theme upload strips them.
+{% enddoc %}
+
+{%- liquid
+  assign poster = section.settings.poster
+  assign webm = section.settings.video_webm | default: 'ew-hero-film.webm' | asset_url
+  assign mp4 = section.settings.video_mp4 | default: 'ew-hero-film.mp4' | asset_url
+-%}
+
+<section class="ew-scope hero2 filmhero" data-testid="everword-film-hero">
+  <div class="filmwrap">
+    {%- if section.settings.show_video -%}
+      <video
+        class="hfilm"
+        {% if poster %}poster="{{ poster | image_url: width: 1600 }}"{% endif %}
+        muted
+        playsinline
+        loop
+        autoplay
+        preload="none"
+        disablepictureinpicture
+        {% if section.settings.video_alt != blank %}aria-label="{{ section.settings.video_alt | escape }}"{% endif %}
+      >
+        <source src="{{ webm }}" type="video/webm">
+        <source src="{{ mp4 }}" type="video/mp4">
+      </video>
+    {%- elsif poster -%}
+      <img class="hfilm" src="{{ poster | image_url: width: 1600 }}" alt="{{ section.settings.video_alt | escape }}" width="{{ poster.width }}" height="{{ poster.height }}">
+    {%- endif -%}
+
+    <div class="hcopy">
+      {%- if section.settings.heading != blank -%}
+        <h1>{{ section.settings.heading }}</h1>
+      {%- endif -%}
+      {%- if section.settings.body != blank -%}
+        <p>{{ section.settings.body }}</p>
+      {%- endif -%}
+      {%- if section.settings.cta_label != blank -%}
+        <a class="cta" href="{{ section.settings.cta_link | default: routes.all_products_collection_url }}">{{ section.settings.cta_label }}</a>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Everword film hero",
+  "tag": "section",
+  "settings": [
+    { "type": "checkbox", "id": "show_video", "label": "Play the film", "default": true },
+    { "type": "image_picker", "id": "poster", "label": "Poster image", "info": "Shown before the film loads, and instead of it when a visitor prefers reduced motion." },
+    { "type": "text", "id": "video_webm", "label": "WebM URL", "info": "Leave blank to use the bundled ew-hero-film.webm." },
+    { "type": "text", "id": "video_mp4", "label": "MP4 URL", "info": "Leave blank to use the bundled ew-hero-film.mp4." },
+    { "type": "text", "id": "video_alt", "label": "Film description", "default": "One woman across four chapters of her life — a birthday, her graduation, the morning of her wedding, and her first baby — wearing a different personalised piece in each" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "A gift for every chapter." },
+    { "type": "textarea", "id": "body", "label": "Body", "default": "Names, birthstones and keepsakes, made after you order, boxed and ready to give." },
+    { "type": "text", "id": "cta_label", "label": "Button label", "default": "Shop by occasion" },
+    { "type": "url", "id": "cta_link", "label": "Button link" }
+  ],
+  "presets": [{ "name": "Everword film hero", "category": "Everword" }]
+}
+{% endschema %}
