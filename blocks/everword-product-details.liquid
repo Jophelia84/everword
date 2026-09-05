@@ -20,7 +20,7 @@
   assign care = product.metafields.everword.care.value
 -%}
 
-<div class="ew-scope" {{ block.shopify_attributes }}>
+<div class="ew-scope ew-buy" {{ block.shopify_attributes }}>
   {%- if block.settings.shipping != blank -%}
     <ul class="ship">
       {%- assign lines = block.settings.shipping | newline_to_br | split: '<br />' -%}

@@ -36,7 +36,7 @@
 -%}
 
 {%- if product != blank and kind != 'none' -%}
-  <div class="ew-scope" {{ block.shopify_attributes }}>
+  <div class="ew-scope ew-buy" {{ block.shopify_attributes }}>
     {%- assign ew_form_id = 'BuyButtons-ProductForm-' | append: section.id -%}
     {% render 'everword-personalisation',
        product: product,

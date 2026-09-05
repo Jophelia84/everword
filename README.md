@@ -98,6 +98,25 @@ with it and there is a single add-to-cart path. It mirrors the price and the
 availability from the main buy panel by watching those elements, which keeps it
 correct without depending on the name or shape of any internal Horizon event.
 
+**Everything on the product form, cart and drawers is Horizon's, restyled.**
+`assets/everword-shopify.css` reaches into Horizon's own components rather than
+replacing them, because those components carry the cart logic. It loads last, so
+it wins on order rather than on specificity wars.
+
+Two things it fixes rather than decorates. Horizon's buttons are
+`width: fit-content`, which on a column of full-width fields makes add-to-cart
+read as a mistake. And line item properties are set to be legible rather than
+tucked into fine print — on a personalised order the customer reading back what
+they typed before they pay is the whole ballgame.
+
+**The email capture** is in the footer group, off `sections/everword-optin.liquid`.
+It waits (12s, or 35% scroll, or exit intent — whichever comes first), asks for
+one field, never appears over the cart or checkout or a signed-in customer,
+remembers a dismissal for 14 days and a signup for a year, traps focus and
+closes on Escape. Exit intent is desktop-only on purpose: pointing at the tab
+bar has no touch equivalent, and the mobile approximations fire during ordinary
+browsing and read as a trap.
+
 **The hero film.** `assets/ew-hero-film.mp4` and `.webm` ship with the theme, but
 Shopify's asset directory does not reliably accept video. If the upload strips
 them, put them in Content → Files and paste the URLs into the film hero section's

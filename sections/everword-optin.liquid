@@ -1,0 +1,124 @@
+{% doc %}
+  The email capture modal.
+
+  What it does and why, since these are the parts that decide whether it earns
+  its interruption rather than costing a sale:
+
+  - It waits. A modal thrown at somebody in their first seconds gets dismissed
+    before they have read it. The delay is a setting, and exit intent is offered
+    instead of a timer because someone leaving has already decided.
+  - One field. Every extra field costs completions, and a name adds nothing an
+    order will not tell you later.
+  - A concrete offer beats "join our newsletter". The default says what they
+    get and when.
+  - It never appears over the cart or checkout, and never over a customer who
+    is already signed in — interrupting someone mid-purchase to ask for the
+    email address you are about to collect anyway is pure loss.
+  - Dismissal is remembered, for longer than acceptance is re-asked.
+  - It traps focus and closes on Escape, because a modal a keyboard cannot
+    leave is a broken page, not a conversion tactic.
+{% enddoc %}
+
+{%- liquid
+  assign suppress = false
+  if template.name == 'cart' or request.path contains '/checkouts'
+    assign suppress = true
+  endif
+  if section.settings.hide_for_customers and customer
+    assign suppress = true
+  endif
+-%}
+
+{%- unless suppress -%}
+  <everword-optin
+    class="ew-scope ew-optin"
+    data-delay="{{ section.settings.delay }}"
+    data-scroll="{{ section.settings.scroll_percent }}"
+    data-exit-intent="{{ section.settings.exit_intent }}"
+    data-remember-days="{{ section.settings.remember_days }}"
+    data-remember-signup-days="{{ section.settings.remember_signup_days }}"
+    hidden
+  >
+    <div class="ew-optin__scrim" data-ew-dismiss></div>
+
+    <div class="ew-optin__panel" role="dialog" aria-modal="true"
+         aria-labelledby="ew-optin-h" aria-describedby="ew-optin-b">
+      <button class="ew-optin__x" type="button" data-ew-dismiss aria-label="Close">&times;</button>
+
+      {%- if section.settings.image != blank -%}
+        {%- assign oi = section.settings.image -%}
+        <div class="ew-optin__art">
+          <img src="{{ oi | image_url: width: 800 }}" alt="" aria-hidden="true"
+               loading="lazy" width="{{ oi.width }}" height="{{ oi.height }}">
+        </div>
+      {%- endif -%}
+
+      <div class="ew-optin__body">
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="ew-optin__eyebrow">{{ section.settings.eyebrow }}</p>
+        {%- endif -%}
+        <h2 class="ew-optin__h" id="ew-optin-h">{{ section.settings.heading }}</h2>
+        <p class="ew-optin__p" id="ew-optin-b">{{ section.settings.body }}</p>
+
+        {%- form 'customer', class: 'ew-optin__form' -%}
+          <input type="hidden" name="contact[tags]" value="{{ section.settings.tag | default: 'newsletter,popup' }}">
+          <label class="vh" for="ew-optin-email">Email address</label>
+          <input
+            id="ew-optin-email"
+            type="email"
+            name="contact[email]"
+            inputmode="email"
+            autocomplete="email"
+            placeholder="{{ section.settings.placeholder | default: 'Email address' }}"
+            required
+          >
+          <button type="submit">{{ section.settings.button | default: 'Join' }}</button>
+
+          {%- if form.posted_successfully? -%}
+            <p class="ew-optin__note" role="status" data-ew-success>{{ section.settings.success }}</p>
+          {%- elsif form.errors -%}
+            <p class="ew-optin__note" role="alert">{{ form.errors.messages.email }}</p>
+          {%- endif -%}
+        {%- endform -%}
+
+        {%- if section.settings.small_print != blank -%}
+          <p class="ew-optin__fine">{{ section.settings.small_print }}</p>
+        {%- endif -%}
+
+        <button class="ew-optin__decline" type="button" data-ew-dismiss>
+          {{ section.settings.decline | default: 'No thanks' }}
+        </button>
+      </div>
+    </div>
+  </everword-optin>
+
+  <script src="{{ 'everword-optin.js' | asset_url }}" defer="defer"></script>
+{%- endunless -%}
+
+{% schema %}
+{
+  "name": "Everword email capture",
+  "settings": [
+    { "type": "header", "content": "When it appears" },
+    { "type": "range", "id": "delay", "label": "Delay", "min": 0, "max": 60, "step": 1, "unit": "s", "default": 12, "info": "Long enough that they have seen something first. 0 waits for the scroll or exit trigger only." },
+    { "type": "range", "id": "scroll_percent", "label": "Or once they scroll past", "min": 0, "max": 100, "step": 5, "unit": "%", "default": 35, "info": "Whichever comes first. 0 turns this off." },
+    { "type": "checkbox", "id": "exit_intent", "label": "Or on exit intent", "default": true, "info": "Desktop only — pointing at the tab bar has no touch equivalent." },
+    { "type": "checkbox", "id": "hide_for_customers", "label": "Never show to signed-in customers", "default": true },
+    { "type": "range", "id": "remember_days", "label": "Stay away after a dismissal", "min": 1, "max": 90, "step": 1, "unit": "d", "default": 14 },
+    { "type": "range", "id": "remember_signup_days", "label": "Stay away after a signup", "min": 30, "max": 365, "step": 5, "unit": "d", "default": 365 },
+
+    { "type": "header", "content": "What it says" },
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow", "default": "Everword+" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "10% off your first piece" },
+    { "type": "textarea", "id": "body", "label": "Body", "default": "Join for the code, then early looks at new pieces and the occasional styling note. Nothing else." },
+    { "type": "text", "id": "placeholder", "label": "Field placeholder", "default": "Email address" },
+    { "type": "text", "id": "button", "label": "Button", "default": "Send my code" },
+    { "type": "text", "id": "decline", "label": "Decline link", "default": "No thanks" },
+    { "type": "text", "id": "success", "label": "After signing up", "default": "Welcome. Your code is on its way." },
+    { "type": "text", "id": "small_print", "label": "Small print", "default": "One-click unsubscribe, always." },
+    { "type": "text", "id": "tag", "label": "Customer tags", "default": "newsletter,popup" },
+    { "type": "image_picker", "id": "image", "label": "Image" }
+  ],
+  "enabled_on": { "groups": ["footer"] }
+}
+{% endschema %}

@@ -53,9 +53,29 @@
         "newsletter_note": "Leave whenever you like \u2014 every email has a one-click unsubscribe.",
         "dedication": "For Faye."
       }
+    },
+    "everword_optin": {
+      "type": "everword-optin",
+      "settings": {
+        "delay": 12,
+        "scroll_percent": 35,
+        "exit_intent": true,
+        "hide_for_customers": true,
+        "remember_days": 14,
+        "remember_signup_days": 365,
+        "eyebrow": "Everword+",
+        "heading": "10% off your first piece",
+        "body": "Join for the code, then early looks at new pieces and the occasional styling note. Nothing else.",
+        "button": "Send my code",
+        "decline": "No thanks",
+        "success": "Welcome. Your code is on its way.",
+        "small_print": "One-click unsubscribe, always.",
+        "tag": "newsletter,popup"
+      }
     }
   },
   "order": [
-    "everword_footer"
+    "everword_footer",
+    "everword_optin"
   ]
 }

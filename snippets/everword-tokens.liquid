@@ -34,6 +34,9 @@
     --tile: {{ tile }};
     --mute: rgb({{ text.rgb }} / 0.66);
     --display: 'Cormorant Garamond', Georgia, serif;
+    /* The source referenced var(--body) but never defined it, so every rule
+       using it was silently dropped. Defining it makes those rules work. */
+    --body: 'Jost', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
     --ew-hero-poster: url({{ 'ew-inline-689653544f.webp' | asset_url }});
     --navh: 96px;
   }
@@ -45,3 +48,4 @@
 {% endstyle %}
 
 {{ 'everword.css' | asset_url | stylesheet_tag }}
+{{ 'everword-shopify.css' | asset_url | stylesheet_tag }}

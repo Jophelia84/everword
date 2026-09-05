@@ -35,7 +35,8 @@ em{font-style:italic}
 .ew-nav .links{display:flex;gap:30px;font-size:12.5px;letter-spacing:.1em;color:var(--cream-dim)}
 .ew-nav .links a:hover{color:var(--cream)}
 .ew-nav .cart{font-size:12.5px;letter-spacing:.1em;color:var(--cream-dim)}
-@media(max-width:760px){.ew-nav{padding:14px 20px}.ew-nav .links{display:none}}
+@media(max-width:760px){.ew-nav{padding:14px 20px}
+.ew-nav .links{display:none}}
 
 /* ---------- film hero ---------- */
 #film{position:relative;height:420vh;background:var(--ink)}
@@ -257,45 +258,85 @@ details p{margin:0 0 24px;font-size:14px;line-height:1.8;color:var(--cream-dim);
 .pdp .gal .ph i{font-style:normal;font-family:'Alegreya Sans',sans-serif;font-weight:300;font-size:11px;
   letter-spacing:.17em;text-transform:uppercase;color:var(--cream-dim);opacity:.55}
 .pdp .buy{position:sticky;top:96px;padding:4px 0 90px 6%}
-.pdp .crumb{font-family:'Alegreya Sans',sans-serif;font-weight:300;font-size:11.5px;letter-spacing:.18em;
+.pdp .crumb,
+.ew-buy .crumb{font-family:'Alegreya Sans',sans-serif;font-weight:300;font-size:11.5px;letter-spacing:.18em;
   text-transform:uppercase;color:var(--cream-dim);margin:0 0 16px}
-.pdp h1{font-family:'Prata',serif;font-weight:400;font-size:31px;line-height:1.24;
+.pdp h1,
+.ew-buy h1{font-family:'Prata',serif;font-weight:400;font-size:31px;line-height:1.24;
   color:var(--cream);margin:0 0 12px}
-.pdp .pr{font-family:'Alegreya Sans',sans-serif;font-weight:400;font-size:17px;color:var(--cream);margin:0 0 18px}
-.pdp .bl{font-family:var(--body);font-size:15.5px;line-height:1.75;color:var(--cream-dim);
+.pdp .pr,
+.ew-buy .pr{font-family:'Alegreya Sans',sans-serif;font-weight:400;font-size:17px;color:var(--cream);margin:0 0 18px}
+.pdp .bl,
+.ew-buy .bl{font-family:var(--body);font-size:15.5px;line-height:1.75;color:var(--cream-dim);
   margin:0 0 30px;max-width:44ch}
-.pdp .fld{margin:0 0 24px}
-.pdp .fld>label{display:block;font-family:'Alegreya Sans',sans-serif;font-weight:400;font-size:11.5px;
+.pdp .fld,
+.ew-buy .fld{margin:0 0 24px}
+.pdp .fld>label,
+.ew-buy .fld>label{display:block;font-family:'Alegreya Sans',sans-serif;font-weight:400;font-size:11.5px;
   letter-spacing:.17em;text-transform:uppercase;color:var(--cream-dim);margin:0 0 10px}
-.pdp .opts{display:flex;gap:8px;flex-wrap:wrap}
-.pdp .opt{font-family:'Alegreya Sans',sans-serif;font-weight:300;font-size:13px;color:var(--cream);
+.pdp .opts,
+.ew-buy .opts{display:flex;gap:8px;flex-wrap:wrap}
+.pdp .opt,
+.ew-buy .opt{font-family:'Alegreya Sans',sans-serif;font-weight:300;font-size:13px;color:var(--cream);
   background:none;border:1px solid var(--line);border-radius:2px;padding:11px 16px;cursor:pointer;
   transition:.18s;text-align:left}
-.pdp .opt:hover{border-color:var(--cream-dim)}
-.pdp .opt[aria-pressed="true"]{border-color:var(--gold);box-shadow:inset 0 0 0 1px var(--gold)}
-.pdp .opt small{display:block;font-size:11px;color:var(--cream-dim);margin-top:3px}
-.pdp input[type=text],.pdp textarea,.pdp select{width:100%;font-family:var(--body);font-size:15px;
+.pdp .opt:hover,
+.ew-buy .opt:hover{border-color:var(--cream-dim)}
+.pdp .opt[aria-pressed="true"],
+.ew-buy .opt[aria-pressed="true"]{border-color:var(--gold);box-shadow:inset 0 0 0 1px var(--gold)}
+.pdp .opt small,
+.ew-buy .opt small{display:block;font-size:11px;color:var(--cream-dim);margin-top:3px}
+.pdp input[type=text],
+.pdp textarea,
+.pdp select,
+.ew-buy input[type=text],
+.ew-buy textarea,
+.ew-buy select{width:100%;font-family:var(--body);font-size:15px;
   color:var(--cream);background:none;border:1px solid var(--line);border-radius:2px;padding:12px 13px}
-.pdp textarea{min-height:84px;resize:vertical;line-height:1.6}
-.pdp input:focus,.pdp textarea:focus,.pdp select:focus{outline:none;border-color:var(--gold)}
-.pdp .cnt{font-family:'Alegreya Sans',sans-serif;font-size:11px;color:var(--cream-dim);margin-top:7px;text-align:right}
-.pdp .cnt.over{color:#9d2f2f}
-.pdp .row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.pdp .addbag,.sbar .addbag{width:100%;font-family:'Alegreya Sans',sans-serif;font-weight:400;font-size:13px;
+.pdp textarea,
+.ew-buy textarea{min-height:84px;resize:vertical;line-height:1.6}
+.pdp input:focus,
+.pdp textarea:focus,
+.pdp select:focus,
+.ew-buy input:focus,
+.ew-buy textarea:focus,
+.ew-buy select:focus{outline:none;border-color:var(--gold)}
+.pdp .cnt,
+.ew-buy .cnt{font-family:'Alegreya Sans',sans-serif;font-size:11px;color:var(--cream-dim);margin-top:7px;text-align:right}
+.pdp .cnt.over,
+.ew-buy .cnt.over{color:#9d2f2f}
+.pdp .row2,
+.ew-buy .row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pdp .addbag,
+.sbar .addbag,
+.ew-buy .addbag{width:100%;font-family:'Alegreya Sans',sans-serif;font-weight:400;font-size:13px;
   letter-spacing:.19em;text-transform:uppercase;color:var(--ink);background:var(--ink-2);
   border:none;border-radius:2px;padding:18px;cursor:pointer;transition:.2s;margin-top:6px}
-.pdp .addbag:hover,.sbar .addbag:hover{opacity:.88}
-.pdp .rea{font-family:var(--body);font-size:13px;color:var(--cream-dim);margin:14px 0 0;text-align:center}
-.pdp .acc{margin-top:34px;border-top:1px solid var(--line)}
-.pdp .acc details{border-bottom:1px solid var(--line)}
-.pdp .acc summary{cursor:pointer;list-style:none;padding:17px 0;font-family:'Alegreya Sans',sans-serif;
+.pdp .addbag:hover,
+.sbar .addbag:hover,
+.ew-buy .addbag:hover{opacity:.88}
+.pdp .rea,
+.ew-buy .rea{font-family:var(--body);font-size:13px;color:var(--cream-dim);margin:14px 0 0;text-align:center}
+.pdp .acc,
+.ew-buy .acc{margin-top:34px;border-top:1px solid var(--line)}
+.pdp .acc details,
+.ew-buy .acc details{border-bottom:1px solid var(--line)}
+.pdp .acc summary,
+.ew-buy .acc summary{cursor:pointer;list-style:none;padding:17px 0;font-family:'Alegreya Sans',sans-serif;
   font-weight:400;font-size:13px;letter-spacing:.13em;text-transform:uppercase;color:var(--cream);
   display:flex;justify-content:space-between}
-.pdp .acc summary::-webkit-details-marker{display:none}
-.pdp .acc summary:after{content:"+";font-size:15px;color:var(--cream-dim)}
-.pdp .acc details[open] summary:after{content:"–"}
-.pdp .acc ul{margin:0 0 20px;padding-left:17px}
-.pdp .acc li,.pdp .acc p{font-family:var(--body);font-size:14px;line-height:1.75;
+.pdp .acc summary::-webkit-details-marker,
+.ew-buy .acc summary::-webkit-details-marker{display:none}
+.pdp .acc summary:after,
+.ew-buy .acc summary:after{content:"+";font-size:15px;color:var(--cream-dim)}
+.pdp .acc details[open] summary:after,
+.ew-buy .acc details[open] summary:after{content:"–"}
+.pdp .acc ul,
+.ew-buy .acc ul{margin:0 0 20px;padding-left:17px}
+.pdp .acc li,
+.pdp .acc p,
+.ew-buy .acc li,
+.ew-buy .acc p{font-family:var(--body);font-size:14px;line-height:1.75;
   color:var(--cream-dim);margin:0 0 7px}
 .zoomwrap{position:fixed;inset:0;z-index:200;background:rgba(11,10,9,.94);
   display:none;align-items:center;justify-content:center;padding:4vmin;cursor:zoom-out}
@@ -559,7 +600,8 @@ details p{margin:0 0 24px;font-size:14px;line-height:1.8;color:var(--cream-dim);
 .megagrid .mcols{grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
 .megatitle{font-family:'Prata',serif;font-size:16.5px;letter-spacing:.10em;
   text-transform:uppercase;color:var(--ink-2);margin:0 0 22px}
-@media(max-width:1100px){.megagrid{grid-template-columns:1fr}.feat{display:none}}
+@media(max-width:1100px){.megagrid{grid-template-columns:1fr}
+.feat{display:none}}
 @media(max-width:860px){
   .mtoprow{padding:8px 14px 0}
   .mcols a img{width:30px;height:30px;flex:0 0 30px}
@@ -627,12 +669,14 @@ details p{margin:0 0 24px;font-size:14px;line-height:1.8;color:var(--cream-dim);
   color:var(--cream)}
 .schips button:hover{background:var(--ink-2);color:#fff}
 .snone{color:var(--cream-dim);font-size:13.5px}
-@media(max-width:1080px){.scols{grid-template-columns:1fr 260px}.scare{grid-column:1/-1}}
+@media(max-width:1080px){.scols{grid-template-columns:1fr 260px}
+.scare{grid-column:1/-1}}
 @media(max-width:760px){
   .sin{padding:22px 16px 50px}
   .scols{grid-template-columns:1fr;gap:34px}
   .sgrid,.stiles{grid-template-columns:repeat(2,1fr)}
-  .sform input{font-size:15px}.sgo{padding:0 18px}
+  .sform input{font-size:15px}
+.sgo{padding:0 18px}
 }
 
 /* ---- v36 shop ---- */
@@ -715,7 +759,8 @@ details p{margin:0 0 24px;font-size:14px;line-height:1.8;color:var(--cream-dim);
 .noneleft{padding:50px 0;color:var(--cream-dim);font-size:14px}
 .noneleft button{background:none;border:0;text-decoration:underline;cursor:pointer;
   color:var(--ink-2);font-size:14px}
-@media(max-width:1100px){.pgrid{grid-template-columns:repeat(2,1fr)}.ed{grid-column:span 2}}
+@media(max-width:1100px){.pgrid{grid-template-columns:repeat(2,1fr)}
+.ed{grid-column:span 2}}
 @media(max-width:860px){
   .shoplay{grid-template-columns:1fr;padding:20px 16px 60px}
   .facets{position:fixed;inset:0;z-index:75;background:var(--nav-bg);padding:70px 20px 30px;
@@ -836,14 +881,15 @@ a.pitem:hover{color:var(--ink-2)}
   .filmwrap:after{background:
     linear-gradient(to top,rgba(20,17,58,.84) 0%,rgba(20,17,58,.54) 46%,
       rgba(20,17,58,0) 84%)}
-}
-
+}/* ---- v43 product page ---- */
+.pdp .gal,
 /* ---- v43 product page ---- */
-.pdp .gal{display:grid;grid-template-columns:1fr 1fr;gap:10px;position:static;padding-bottom:60px}
+.ew-buy .gal{display:grid;grid-template-columns:1fr 1fr;gap:10px;position:static;padding-bottom:60px}
 .pdp .gal figure{aspect-ratio:4/5;background:var(--tile,#EFE7DA);border-radius:2px}
-.pdp .gal img{object-fit:cover}
+.pdp .gal img{object-fit:cover}/* v91: the description scrolls. The gallery is what pins now. */
+.pdp .buy,
 /* v91: the description scrolls. The gallery is what pins now. */
-.pdp .buy{position:static;align-self:start;padding-bottom:60px}
+.ew-buy .buy{position:static;align-self:start;padding-bottom:60px}
 .elev{font-family:'Alegreya Sans',sans-serif;font-size:12px;letter-spacing:.22em;text-transform:uppercase;
   color:var(--mute,#6E655A);margin:0 0 6px}
 .story p{font-size:14.5px;line-height:1.75;margin:0 0 14px;color:var(--ink-2,#211c1a)}
@@ -878,11 +924,12 @@ ul.care li{font-size:13px;line-height:1.7;margin-bottom:9px}
 @media(max-width:560px){
   .pdp .gal{grid-template-columns:1fr}
   .buyrow{grid-template-columns:1fr}
-}
-
-/* ---- v44 product page corrections ---- */
-/* one column, so the gallery is as tall as the buy panel it sits beside */
-.pdp .gal{grid-template-columns:1fr;gap:12px}
+}/* ---- v44 product page corrections ---- */
+/* one column,
+so the gallery is as tall as the buy panel it sits beside */
+.pdp .gal,
+so the gallery is as tall as the buy panel it sits beside */
+.ew-buy .gal{grid-template-columns:1fr;gap:12px}
 .pdp .gal img{object-fit:cover}
 /* cross-sell tiles reuse the shelf tile, so they need the shelf image rule */
 .xsell .tile .shot{aspect-ratio:4/5;overflow:hidden;display:block;background:var(--tile,#EFE7DA)}
@@ -892,15 +939,20 @@ ul.care li{font-size:13px;line-height:1.7;margin-bottom:9px}
 }
 @media(max-width:560px){
   .pdp .gal{grid-template-columns:1fr}
-}
-
-/* ---- v91 gallery: rail + one main shot, pinned. V 27 Aug ---- */
-/* v90 pinned the buy panel and let the column scroll, which meant the lower
+}/* ---- v91 gallery: rail + one main shot,
+pinned. V 27 Aug ---- */
+/* v90 pinned the buy panel and let the column scroll,
+which meant the lower
    half of the description could not be reached without scrolling past every
-   picture. The gallery is the short column, so the gallery is the one that
+   picture. The gallery is the short column,
+so the gallery is the one that
    pins. align-self:start is load-bearing — without it the grid stretches this
    to full height and there is nothing left to stick. */
-.pdp .gal{display:grid;grid-template-columns:74px 1fr;gap:14px;align-items:start;
+.pdp .gal,
+so the gallery is the one that
+   pins. align-self:start is load-bearing — without it the grid stretches this
+   to full height and there is nothing left to stick. */
+.ew-buy .gal{display:grid;grid-template-columns:74px 1fr;gap:14px;align-items:start;
   position:sticky;top:calc(var(--navh,96px) + 14px);align-self:start;
   padding:0 10px 60px 0}
 .pdp .gal.single{grid-template-columns:1fr}
@@ -908,11 +960,17 @@ ul.care li{font-size:13px;line-height:1.7;margin-bottom:9px}
    for a 900px-wide photograph that is 900px — so on a 390px phone the column
    was resolving to 873px and the pictures were rendering at 2.2x, cropped to a
    detail. It was only invisible because the body clip hid the overflow. This
-   predates v90; it is the mobile PDP's real bug. */
-.pdp .gal,.pdp .buy{min-width:0}
-/* the main shot is never cropped, at any width — a mobile rule from v45 set
+   predates v90;it is the mobile PDP's real bug. */
+.pdp .gal,
+.pdp .buy,
+it is the mobile PDP's real bug. */
+.ew-buy .gal{min-width:0}/* the main shot is never cropped,
+at any width — a mobile rule from v45 set
    object-fit:cover on every gallery image and outranks .mainshot img */
-.pdp .gal .mainshot img{object-fit:contain}
+.pdp .gal .mainshot img,
+at any width — a mobile rule from v45 set
+   object-fit:cover on every gallery image and outranks .mainshot img */
+.ew-buy .gal .mainshot img{object-fit:contain}
 .thumbs{display:flex;flex-direction:column;gap:10px}
 .th{padding:0;margin:0;background:none;cursor:pointer;border:1px solid transparent;
   border-radius:2px;overflow:hidden;aspect-ratio:4/5;transition:border-color .2s}
@@ -949,10 +1007,14 @@ ul.mnav > li > ul a:hover{color:inherit}
 .docbody .ded{font-family:'Cormorant Garamond',Georgia,serif;font-size:16px;opacity:.6;
   text-align:center;margin-top:44px}
 
-@media(max-width:980px){
-  /* stacked: main shot first, rail underneath as a horizontal strip, nothing
+@media(max-width:980px){/* stacked: main shot first,
+rail underneath as a horizontal strip,
+nothing
      pinned — there is no second column to pin against */
-  .pdp .gal{display:flex;flex-direction:column;gap:10px;padding-right:0;position:static}
+  .pdp .gal,
+nothing
+     pinned — there is no second column to pin against */
+  .ew-buy .gal{display:flex;flex-direction:column;gap:10px;padding-right:0;position:static}
   .mainshot{order:1}
   .thumbs{order:2;flex-direction:row;gap:8px;overflow-x:auto;padding-bottom:2px}
   .thumbs .th{flex:0 0 68px}
@@ -1039,12 +1101,13 @@ ul.mnav2 > li > button:hover,ul.mnav2 > li > a:hover{color:var(--cream)}
 
 /* ---- v63 card message: sans, so the wordmark is the only serif on it ---- */
 .cardprev p,.cardprev.bone p{font-family:'Alegreya Sans',sans-serif;font-weight:300;
-  font-size:9.5px;line-height:1.72;letter-spacing:.012em}
-
+  font-size:9.5px;line-height:1.72;letter-spacing:.012em}/* ---- v64 message card: addressee / message / signature ---- */
+.pdp .sub,
 /* ---- v64 message card: addressee / message / signature ---- */
-.pdp .sub{display:block;font-family:'Alegreya Sans',sans-serif;font-weight:400;font-size:11.5px;
+.ew-buy .sub{display:block;font-family:'Alegreya Sans',sans-serif;font-weight:400;font-size:11.5px;
   letter-spacing:.17em;text-transform:uppercase;color:var(--cream-dim);margin:0 0 7px}
-.pdp .row2.mrow{margin-bottom:12px;align-items:start}
+.pdp .row2.mrow,
+.ew-buy .row2.mrow{margin-bottom:12px;align-items:start}
 .cardprev{display:block;padding:0;background:#FBF9F4}
 .cardprev .cghost{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
 .cardprev .cto{position:absolute;left:7%;right:7%;top:8.4%;text-align:center;

@@ -1,0 +1,205 @@
+/*
+ * Everword over Horizon's own components.
+ *
+ * The sections and blocks in this theme are Everword's, but the product form,
+ * cart and drawers are Horizon's — they carry the cart logic, and rebuilding
+ * them would mean rebuilding that. So they are restyled here to the source's
+ * typography and restraint rather than replaced.
+ *
+ * Loaded after everword.css, which is itself loaded after Horizon's base.css,
+ * so these win on order rather than on specificity wars.
+ */
+
+/* ---------- buttons ---------- */
+/* Horizon's buttons are width:fit-content. On a product panel that is a column
+   of full-width fields, an add-to-cart that hugs its label reads as a mistake. */
+.add-to-cart-button,
+.product-form-buttons .button,
+.shopify-payment-button__button--unbranded {
+  width: 100%;
+  font-family: 'Alegreya Sans', sans-serif;
+  font-weight: 400;
+  font-size: 13px;
+  letter-spacing: 0.19em;
+  text-transform: uppercase;
+  padding-block: 18px;
+  border-radius: 2px;
+}
+
+.shopify-payment-button__button--branded { border-radius: 2px; }
+
+/* ---------- variant picker ---------- */
+.variant-option { margin-bottom: 22px; }
+
+.variant-option legend,
+.variant-option > label {
+  font-family: 'Alegreya Sans', sans-serif;
+  font-weight: 400;
+  font-size: 11.5px;
+  letter-spacing: 0.17em;
+  text-transform: uppercase;
+  color: var(--cream-dim);
+  margin-bottom: 10px;
+}
+
+/* The source's option pills: hairline, square-ish, gold when chosen. */
+.variant-option__button-label__text {
+  font-family: 'Alegreya Sans', sans-serif;
+  font-weight: 300;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  padding: 11px 16px;
+  border-radius: 2px;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+
+.variant-option__select {
+  font-family: 'Alegreya Sans', sans-serif;
+  font-size: 13.5px;
+  border-radius: 2px;
+}
+
+/* ---------- cart, both the drawer and the page ---------- */
+.cart-primary-typography,
+cart-items-component .cart-item__name,
+cart-items-component a {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+}
+
+.cart-secondary-typography {
+  font-family: 'Alegreya Sans', sans-serif;
+  font-weight: 300;
+  letter-spacing: 0.04em;
+}
+
+/* A personalised order lives or dies on the customer reading back what they
+   typed before they pay, so line item properties are set to be legible rather
+   than tucked away in fine print. */
+cart-items-component .cart-item__property,
+cart-items-component dl,
+.cart-item__details dl {
+  font-family: 'Alegreya Sans', sans-serif;
+  font-size: 12px;
+  line-height: 1.7;
+  color: var(--cream-dim);
+  margin: 6px 0 0;
+}
+
+cart-items-component dt { font-weight: 400; letter-spacing: 0.1em; text-transform: uppercase; font-size: 10px; }
+cart-items-component dd { margin: 0 0 4px; color: var(--cream); }
+
+/* ---------- drawers and dialogs ---------- */
+dialog-component dialog,
+cart-drawer-component dialog,
+.drawer,
+.search-modal dialog {
+  border: none;
+  border-radius: 0;
+}
+
+/* ---------- inputs, everywhere ---------- */
+.field input[type='text'],
+.field input[type='email'],
+.field textarea,
+.field select {
+  font-family: 'Alegreya Sans', sans-serif;
+  border-radius: 2px;
+}
+
+/* ---------- the cart page ---------- */
+/* Horizon's cart is a compact utility page. Everword's is the last thing
+   somebody reads before paying for something with a name cut into it, so it
+   gets the same air and the same serif as the rest of the shop. */
+.shopify-section:has(> cart-items-component),
+#MainContent .cart-page { padding-block: clamp(28px, 5vw, 64px); }
+
+.cart-page__title,
+[class*='cart-title'] {
+  font-family: 'Prata', serif !important;
+  font-weight: 400;
+  font-size: clamp(26px, 3.4vw, 40px);
+  letter-spacing: 0.01em;
+}
+
+cart-items-component .cart-item { padding-block: 22px; }
+
+/* The checkout button is the one thing on the page that should be unmissable. */
+.cart__checkout-button,
+#MainContent button[name='checkout'],
+cart-items-component button[name='checkout'] {
+  width: 100%;
+  font-family: 'Alegreya Sans', sans-serif;
+  font-weight: 400;
+  font-size: 13px;
+  letter-spacing: 0.19em;
+  text-transform: uppercase;
+  padding-block: 18px;
+  border-radius: 2px;
+}
+
+/* ---------- email capture ---------- */
+.ew-optin{position:fixed;inset:0;z-index:90;display:grid;place-items:center;padding:20px}
+.ew-optin[hidden]{display:none}
+.ew-optin__scrim{
+  position:absolute;inset:0;background:rgba(20,17,58,.42);
+  opacity:0;transition:opacity .3s ease;
+}
+.ew-optin.on .ew-optin__scrim{opacity:1}
+.ew-optin__panel{
+  position:relative;display:grid;grid-template-columns:minmax(0,0.85fr) minmax(0,1fr);
+  width:min(760px,100%);max-height:90vh;overflow:auto;background:var(--ink);
+  box-shadow:0 30px 80px -40px rgba(20,17,58,.55);
+  opacity:0;transform:translateY(12px) scale(.985);
+  transition:opacity .34s ease,transform .34s cubic-bezier(.2,.7,.2,1);
+}
+.ew-optin.on .ew-optin__panel{opacity:1;transform:none}
+.ew-optin__art{position:relative;min-height:100%;background:var(--tile)}
+.ew-optin__art img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.ew-optin__body{padding:clamp(28px,4vw,44px)}
+.ew-optin__eyebrow{
+  margin:0 0 12px;font-family:'Alegreya Sans',sans-serif;font-size:10.5px;
+  letter-spacing:.22em;text-transform:uppercase;color:var(--gold);
+}
+.ew-optin__h{
+  margin:0 0 12px;font-family:'Prata',serif;font-weight:400;
+  font-size:clamp(22px,2.6vw,30px);line-height:1.18;color:var(--cream);
+}
+.ew-optin__p{
+  margin:0 0 22px;font-family:'Alegreya Sans',sans-serif;font-weight:300;
+  font-size:14px;line-height:1.7;color:var(--cream-dim);max-width:38ch;
+}
+.ew-optin__form{display:flex;gap:0;border-bottom:1px solid var(--line)}
+.ew-optin__form input{
+  flex:1;min-width:0;background:none;border:0;padding:13px 2px;outline:none;
+  font-family:'Alegreya Sans',sans-serif;font-size:14px;color:var(--cream);
+}
+.ew-optin__form input::placeholder{color:var(--cream-dim)}
+.ew-optin__form button{
+  flex:none;background:none;border:0;cursor:pointer;padding:0 4px;
+  font-family:'Alegreya Sans',sans-serif;font-size:11.5px;letter-spacing:.17em;
+  text-transform:uppercase;color:var(--cream);
+}
+.ew-optin__form button:hover{color:var(--gold)}
+.ew-optin__note{margin:10px 0 0;font-size:12.5px;color:var(--gold);flex-basis:100%}
+.ew-optin__fine{margin:14px 0 0;font-size:11px;letter-spacing:.04em;color:var(--cream-dim);opacity:.8}
+.ew-optin__decline{
+  display:block;margin:18px 0 0;background:none;border:0;padding:0;cursor:pointer;
+  font-family:'Alegreya Sans',sans-serif;font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--cream-dim);text-decoration:underline;
+  text-underline-offset:3px;
+}
+.ew-optin__decline:hover{color:var(--cream)}
+.ew-optin__x{
+  position:absolute;top:12px;right:14px;z-index:2;background:none;border:0;
+  font-size:26px;line-height:1;cursor:pointer;color:var(--cream-dim);padding:4px 8px;
+}
+.ew-optin__x:hover{color:var(--cream)}
+@media(max-width:700px){
+  .ew-optin__panel{grid-template-columns:1fr}
+  .ew-optin__art{min-height:150px}
+}
+@media(prefers-reduced-motion:reduce){
+  .ew-optin__scrim,.ew-optin__panel{transition:none}
+}

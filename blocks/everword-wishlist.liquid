@@ -10,7 +10,7 @@
 -%}
 
 {%- if product != blank -%}
-  <div class="ew-scope ew-wish-row" {{ block.shopify_attributes }}>
+  <div class="ew-scope ew-buy ew-wish-row" {{ block.shopify_attributes }}>
     {% render 'everword-wishlist-button', product: product, style: 'full' %}
   </div>
 {%- endif -%}

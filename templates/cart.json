@@ -18,7 +18,7 @@
           "settings": {
             "title": "Cart",
             "show_count": true,
-            "type_preset": "h4",
+            "type_preset": "h2",
             "alignment": "left",
             "padding-block-start": 0,
             "padding-block-end": 0,
@@ -31,7 +31,7 @@
           "type": "_cart-products",
           "static": true,
           "settings": {
-            "gap": 24,
+            "gap": 32,
             "image_ratio": "portrait",
             "dividers": true,
             "vendor": false,
