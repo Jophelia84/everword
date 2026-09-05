@@ -14,6 +14,18 @@
     assign alt_img = product.media[1].preview_image
   endif
 
+  comment
+    Products imported from everword-products.csv arrive without media, because
+    the CDN URL of a theme asset is not known until the theme is uploaded. Each
+    piece ships an ew-<handle>.webp in assets/, so the tile falls back to that
+    and the shop renders correctly before any image is attached. Once real
+    product media exists it wins.
+  endcomment
+  assign fallback = null
+  unless img
+    assign fallback = 'ew-' | append: product.handle | append: '.webp' | asset_url
+  endunless
+
   assign meta = product.metafields.everword.tile_meta.value
   if meta == blank
     assign finish_option = null
@@ -33,7 +45,9 @@
 
 <a class="tile" href="{{ product.url }}" data-k="{{ product.handle }}">
   <div class="shot">
-    {%- if img -%}
+    {%- if img == blank and fallback -%}
+      <img alt="{{ product.title | escape }}" loading="{{ loading | default: 'lazy' }}" src="{{ fallback }}">
+    {%- elsif img -%}
       <img
         alt="{{ img.alt | default: product.title | escape }}"
         loading="{{ loading | default: 'lazy' }}"
