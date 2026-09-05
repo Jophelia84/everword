@@ -1,0 +1,61 @@
+{% doc %}
+  The sticky buy bar: thumbnail, title, live price and an add-to-bag button,
+  revealed once the real buy button scrolls out of view.
+
+  Its button submits Horizon's own product form by id rather than posting its
+  own, so the selected variant, the quantity and the personalisation properties
+  all go with it and there is only one add-to-cart path to keep working.
+{% enddoc %}
+
+{%- liquid
+  assign product = closest.product
+  if request.visual_preview_mode and product == blank
+    assign product = collections.all.products.first
+  endif
+  assign img = product.featured_media.preview_image
+-%}
+
+{%- if product != blank -%}
+  <everword-sticky-buy
+    class="ew-scope sbar"
+    data-form="BuyButtons-ProductForm-{{ section.id }}"
+    inert
+    {{ block.shopify_attributes }}
+  >
+    <div class="sbin">
+      <div class="sbleft">
+        <div class="sbthumb">
+          {%- if img -%}
+            <img src="{{ img | image_url: width: 144 }}" alt="" aria-hidden="true"
+                 width="48" height="48" loading="lazy">
+          {%- endif -%}
+        </div>
+        <div class="sbi">
+          <b>{{ product.title }}</b>
+          <span data-ew-price>
+            {%- if product.price_varies -%}From {{ product.price_min | money }}
+            {%- else -%}{{ product.price | money }}{%- endif -%}
+          </span>
+        </div>
+      </div>
+      <button
+        class="addbag sbb"
+        type="submit"
+        form="BuyButtons-ProductForm-{{ section.id }}"
+        data-ew-submit
+      >{{ block.settings.label | default: 'Add to bag' }}</button>
+    </div>
+  </everword-sticky-buy>
+
+  <script src="{{ 'everword-sticky-buy.js' | asset_url }}" defer="defer"></script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Everword sticky buy bar",
+  "settings": [
+    { "type": "text", "id": "label", "label": "Button label", "default": "Add to bag" }
+  ],
+  "presets": [{ "name": "Everword sticky buy bar", "category": "Product" }]
+}
+{% endschema %}

@@ -3,6 +3,12 @@
   Used on the home page as "Celebrate Yourself."
 {% enddoc %}
 
+{%- comment -%}
+  An image_picker setting cannot carry a default, so with nothing picked this
+  band rendered as text with a hole beside it. It falls back to the photograph
+  the source used until someone chooses their own.
+{%- endcomment -%}
+
 <div class="ew-scope about" data-testid="everword-about">
   <div class="wrap inner">
     {%- if section.settings.image != blank -%}
@@ -15,6 +21,12 @@
         src="{{ image | image_url: width: 1040 }}"
         srcset="{{ image | image_url: width: 520 }} 520w, {{ image | image_url: width: 1040 }} 1040w"
         sizes="(max-width: 860px) 90vw, 44vw"
+      >
+    {%- elsif section.settings.default_asset != blank -%}
+      <img
+        alt="{{ section.settings.heading | escape }}"
+        loading="lazy"
+        src="{{ section.settings.default_asset | asset_url }}"
       >
     {%- endif -%}
     <div>
@@ -33,6 +45,7 @@
   "tag": "section",
   "settings": [
     { "type": "image_picker", "id": "image", "label": "Image" },
+    { "type": "text", "id": "default_asset", "label": "Fallback asset", "default": "ew-inline-804736e42f.webp", "info": "A file in the theme's assets, used until an image is chosen above." },
     { "type": "text", "id": "heading", "label": "Heading", "default": "Celebrate Yourself." },
     { "type": "richtext", "id": "body", "label": "Body", "default": "<p>The most important chapter is the one you are writing right now. From custom nameplates to birthstone keepsakes, craft a piece that honors your own journey, your own milestones, and your own story.</p>" },
     { "type": "text", "id": "cta_label", "label": "Button label", "default": "Shop the collection" },

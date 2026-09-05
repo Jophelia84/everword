@@ -1,0 +1,23 @@
+{% doc %}
+  The wishlist heart for the product page, sized to sit next to add-to-bag.
+{% enddoc %}
+
+{%- liquid
+  assign product = closest.product
+  if request.visual_preview_mode and product == blank
+    assign product = collections.all.products.first
+  endif
+-%}
+
+{%- if product != blank -%}
+  <div class="ew-scope ew-wish-row" {{ block.shopify_attributes }}>
+    {% render 'everword-wishlist-button', product: product, style: 'full' %}
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Everword wishlist button",
+  "presets": [{ "name": "Everword wishlist button", "category": "Product" }]
+}
+{% endschema %}

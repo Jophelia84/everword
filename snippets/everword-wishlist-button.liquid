@@ -1,0 +1,22 @@
+{% doc %}
+  The heart. On a product card it is the small icon-only variant; on the product
+  page it sits beside add-to-bag with a label.
+
+  @param product {Product} the product to save
+  @param style {String} 'icon' for cards, 'full' for the product page
+{% enddoc %}
+
+{%- assign is_full = false -%}
+{%- if style == 'full' -%}{%- assign is_full = true -%}{%- endif -%}
+
+<everword-wishlist-button data-handle="{{ product.handle }}">
+  <button
+    type="button"
+    class="{% if is_full %}wish{% else %}ew-wish-icon{% endif %}"
+    aria-pressed="false"
+    aria-label="Save to wishlist"
+  >
+    {% render 'everword-icon', name: 'wish' %}
+    {%- if is_full -%}<span data-ew-label>Wishlist</span>{%- endif -%}
+  </button>
+</everword-wishlist-button>

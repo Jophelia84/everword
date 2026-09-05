@@ -31,9 +31,12 @@ film, the catalogue and all 65 content pages inlined as base64 and JavaScript.
    borrow those collections' images for their thumbnails.
 4. In the theme editor, set the personalisation block on the product template —
    which field, its label, how many characters.
-5. Create collections to feed the home page's occasion doors and its shelf, and
-   pick images for the doors, the about band and the hero.
-6. Optionally import the writing from `everword-data/` — 38 pages and 27
+5. Create collections to feed the home page's occasion doors and its shelf. The
+   doors, the about band and the hero all ship with the source's own photographs
+   as fallbacks, so they look right before you pick anything.
+6. Create a page with the handle `wishlist` and give it the **page.wishlist**
+   template, so the masthead heart has somewhere to go.
+7. Optionally import the writing from `everword-data/` — 38 pages and 27
    articles, none of which comes from ShineOn.
 
 ## Things worth knowing
@@ -69,10 +72,42 @@ ordinary variant options and price themselves. Personalisation text and the
 message card are line item properties instead, so they reach the order without
 multiplying variants.
 
+**The wishlist, and what a theme can honestly promise.** A Shopify theme cannot
+write customer data — there is no storefront API for setting a customer
+metafield — so no theme-only wishlist truly follows a signed-in customer. This
+one is built so both cases work and the second is a setting rather than a
+rewrite:
+
+- Everyone gets a wishlist straight away, kept in their browser.
+- A signed-in customer's saved list is read server-side from the
+  `everword.wishlist` customer metafield, so anything an app, Flow or the admin
+  writes there shows up.
+- Set **Sync endpoint** in Theme settings → Wishlist to an app proxy path (say
+  `/apps/everword/wishlist`) and that becomes the source of truth across
+  devices. It should answer `GET` with `{"wishlist":["handle"]}` and accept the
+  same shape on `POST`. Being a proxy, it is same-origin and carries the
+  customer's session, so it knows who is asking.
+
+Local and remote lists are merged as a union, never replaced, so signing in on a
+new device does not discard what was saved before signing in. A product that has
+since been unpublished drops off the list rather than sitting there dead.
+
+**The sticky buy bar** submits Horizon's own product form by id rather than
+posting its own, so the selected variant, quantity and personalisation all go
+with it and there is a single add-to-cart path. It mirrors the price and the
+availability from the main buy panel by watching those elements, which keeps it
+correct without depending on the name or shape of any internal Horizon event.
+
 **The hero film.** `assets/ew-hero-film.mp4` and `.webm` ship with the theme, but
 Shopify's asset directory does not reliably accept video. If the upload strips
 them, put them in Content → Files and paste the URLs into the film hero section's
 settings — it reads them from there.
+
+**The promise row was rebuilt, not ported.** The source hung it off a 112px top
+margin and put its rules on an inner element at content width, so four short
+labels floated in a lot of air between two lines that aligned with nothing. The
+rules now belong to the section, so they read as its edges, and the spacing,
+row height, icon size and whether the rules run full width are all settings.
 
 **Dead CSS was left alone.** The stylesheet still carries rules for `.news`,
 `.who`, `.band`, `.occ` and `.tiles`. No v94 markup uses any of them, so they are
@@ -83,10 +118,6 @@ earlier versions left behind; no sections were built for them.
 **The catalogue.** No products, and no product photography — ShineOn supplies
 both. Only the 43 design images the sections need are bundled: the hero poster
 and film, the occasion doors, the about band, and the editorial shots.
-
-**The wishlist.** The source kept it in browser storage, which does not survive
-a device change and cannot be read back by the store. It wants a customer
-account or an app rather than a reimplementation, so it was left out.
 
 Horizon's cart drawer and predictive search are reused rather than rebuilt —
 the masthead calls both — because they already work and are accessible.

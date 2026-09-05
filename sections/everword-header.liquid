@@ -46,6 +46,14 @@
           </a>
         {%- endif -%}
 
+        {%- if section.settings.show_wishlist -%}
+          <a href="{{ settings.wishlist_page | default: '/pages/wishlist' }}"
+             class="ew-wish-link" aria-label="Wishlist" title="Wishlist">
+            {% render 'everword-icon', name: 'wish' %}
+            <everword-wishlist-count class="bagn" hidden></everword-wishlist-count>
+          </a>
+        {%- endif -%}
+
         {%- if section.settings.show_account -%}
           <a href="{{ routes.account_url }}" aria-label="My account" title="My account">
             {% render 'everword-icon', name: 'account' %}
@@ -224,6 +232,7 @@
     { "type": "image_picker", "id": "logo", "label": "Logo", "info": "Leave blank to set the wordmark in type." },
     { "type": "text", "id": "wordmark", "label": "Wordmark", "default": "Everword" },
     { "type": "text", "id": "tagline", "label": "Tagline" },
+    { "type": "checkbox", "id": "show_wishlist", "label": "Show the wishlist", "default": true },
     { "type": "checkbox", "id": "show_account", "label": "Show the account link", "default": true },
     { "type": "page", "id": "contact_page", "label": "Contact page" }
   ],

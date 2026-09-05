@@ -252,6 +252,16 @@
             "everword_details": {
               "type": "everword-product-details",
               "settings": {}
+            },
+            "everword_sticky_buy": {
+              "type": "everword-sticky-buy",
+              "settings": {
+                "label": "Add to bag"
+              }
+            },
+            "everword_wishlist": {
+              "type": "everword-wishlist",
+              "settings": {}
             }
           },
           "block_order": [
@@ -261,8 +271,10 @@
             "everword_personalisation",
             "everword_message_card",
             "buy_buttons_eYQEYi",
+            "everword_wishlist",
             "text_aEtTtq",
-            "everword_details"
+            "everword_details",
+            "everword_sticky_buy"
           ]
         },
         "disclosures": {

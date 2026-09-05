@@ -45,6 +45,17 @@ Without `tile_meta`, product cards read the line off whichever option is named
 Finish, Colour, Material, Metal or Plating. Without `specs` or `care`, that
 accordion is simply left out.
 
+## Optional: the wishlist metafield
+
+Define a **customer** metafield `everword.wishlist`, type *Single line text,
+list*, holding product handles. The theme reads it to seed a signed-in
+customer's wishlist.
+
+It only ever reads. A theme cannot write customer data, so for the list to
+follow someone across devices you need an app proxy — set its path under Theme
+settings → Wishlist. Without one the wishlist still works, kept in each
+visitor's browser.
+
 ## Pointing the personalisation at ShineOn's options
 
 The multi-name field limits how many lines it accepts to whatever the count

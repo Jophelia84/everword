@@ -1,16 +1,31 @@
 {% doc %}
-  The four promises, ruled above and below. Icons are picked from a small set
-  drawn to the same 24x24 grid and 1px stroke as the source.
+  The promises, ruled above and below.
+
+  The source put the rules on an inner element at content width and hung the
+  whole thing off a 112px top margin, which left the row floating in a lot of
+  air with two short lines that did not line up with anything. Here the rules
+  belong to the section, so they read as its edges, and the spacing is a
+  setting rather than a constant.
 {% enddoc %}
 
-<section class="ew-scope promise wrap" data-testid="everword-promise">
-  <div class="row">
-    {%- for block in section.blocks -%}
-      <div class="c" {{ block.shopify_attributes }}>
-        {% render 'everword-icon', name: block.settings.icon %}
-        <span>{{ block.settings.label }}</span>
-      </div>
-    {%- endfor -%}
+<section
+  class="ew-scope ew-promise{% if section.settings.full_width_rules == false %} ew-promise--inset{% endif %}"
+  style="
+    --ew-promise-gap: {{ section.settings.gap }}px;
+    --ew-promise-pad: {{ section.settings.pad }}px;
+    --ew-promise-icon: {{ section.settings.icon_size }}px;
+  "
+  data-testid="everword-promise"
+>
+  <div class="wrap">
+    <div class="row">
+      {%- for block in section.blocks -%}
+        <div class="c" {{ block.shopify_attributes }}>
+          {% render 'everword-icon', name: block.settings.icon %}
+          <span>{{ block.settings.label }}</span>
+        </div>
+      {%- endfor -%}
+    </div>
   </div>
 </section>
 
@@ -18,6 +33,12 @@
 {
   "name": "Everword promise row",
   "tag": "section",
+  "settings": [
+    { "type": "range", "id": "gap", "label": "Space above and below", "min": 0, "max": 120, "step": 4, "unit": "px", "default": 48 },
+    { "type": "range", "id": "pad", "label": "Height of the row", "min": 8, "max": 72, "step": 2, "unit": "px", "default": 26 },
+    { "type": "range", "id": "icon_size", "label": "Icon size", "min": 14, "max": 34, "step": 1, "unit": "px", "default": 20 },
+    { "type": "checkbox", "id": "full_width_rules", "label": "Rules span the full width", "default": true, "info": "Off keeps them inside the page margin, as the source had them." }
+  ],
   "blocks": [
     {
       "type": "promise",

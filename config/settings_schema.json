@@ -2116,5 +2116,25 @@
         "default": "equal-width-buttons"
       }
     ]
+  },
+  {
+    "name": "Wishlist",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "A theme cannot write customer data, so the wishlist is kept in the visitor's browser. Point this at an app proxy to make it follow a signed-in customer across devices."
+      },
+      {
+        "type": "url",
+        "id": "wishlist_page",
+        "label": "Wishlist page"
+      },
+      {
+        "type": "text",
+        "id": "wishlist_sync_url",
+        "label": "Sync endpoint",
+        "info": "An app proxy path such as /apps/everword/wishlist. It should answer GET with {\"wishlist\":[\"handle\"]} and accept the same shape on POST. Leave blank to keep the list in the browser only."
+      }
+    ]
   }
 ]

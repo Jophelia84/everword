@@ -1209,3 +1209,74 @@ ul.mnav > li.msec > ul{flex-basis:100%}
    href and works without JavaScript), but the source styled them as buttons. */
 .chips a{display:inline-block;text-decoration:none}
 .chips button,.chips a{font:inherit}
+
+/* ---- promise row, rebuilt ----
+   The ported .promise hung off a 112px top margin and put its rules on an
+   inner element at content width, so two short lines floated in a lot of air
+   and lined up with nothing. The rules now belong to the section, which is
+   what makes them read as its edges, and the spacing is driven by custom
+   properties the section sets from its own settings. */
+.ew-promise{
+  margin-block:var(--ew-promise-gap,48px);
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+}
+.ew-promise .row{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:20px;
+  padding-block:var(--ew-promise-pad,26px);
+}
+.ew-promise .c{display:grid;justify-items:center;gap:10px;text-align:center}
+.ew-promise .c svg{
+  width:var(--ew-promise-icon,20px);height:var(--ew-promise-icon,20px);
+  opacity:.72;color:var(--cream);
+}
+.ew-promise .c span{
+  font-family:'Alegreya Sans',sans-serif;font-weight:300;
+  font-size:10px;letter-spacing:.17em;text-transform:uppercase;
+  color:var(--cream-dim);line-height:1.3;
+}
+/* Keeping the rules inside the page margin is the source's original look. */
+.ew-promise--inset{border-top:0;border-bottom:0}
+.ew-promise--inset .row{
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+}
+@media(max-width:760px){
+  .ew-promise .row{grid-template-columns:repeat(2,1fr);gap:24px 16px}
+}
+
+/* ---- wishlist ----
+   The source drew the heart on the product page only and kept the list in
+   browser storage. The card heart is new, so it is styled here rather than in
+   the ported block above. */
+.ew-tile-wrap{position:relative}
+.ew-wish-icon{
+  position:absolute;top:10px;right:10px;z-index:2;
+  display:grid;place-items:center;width:32px;height:32px;padding:0;
+  background:rgba(252,251,248,.86);border:0;border-radius:50%;cursor:pointer;
+  color:var(--cream);opacity:0;transition:opacity .25s ease,background .2s ease;
+}
+.ew-tile-wrap:hover .ew-wish-icon,
+.ew-wish-icon:focus-visible,
+.ew-wish-icon[aria-pressed="true"]{opacity:1}
+.ew-wish-icon svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.5}
+.ew-wish-icon[aria-pressed="true"] svg{fill:var(--gold);stroke:var(--gold)}
+.ew-wish-icon:hover{background:#fff}
+/* Coarse pointers never hover, so the heart has to be there from the start. */
+@media (hover: none){ .ew-wish-icon{opacity:1} }
+
+.ew-wish-row{margin-top:10px}
+.ew-wish-row .wish{width:100%;justify-content:center}
+.wish[aria-pressed="true"]{border-color:var(--gold);color:var(--gold)}
+.wish[aria-pressed="true"] svg{fill:currentColor}
+
+.ew-wish-link{position:relative;display:flex;align-items:center;color:inherit}
+.ew-wish-link svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.35}
+
+.ew-wish-item{position:relative}
+.ew-wish-remove{
+  margin-top:8px;background:none;border:0;padding:0;cursor:pointer;
+  font-family:'Alegreya Sans',sans-serif;font-size:11px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--cream-dim);
+}
+.ew-wish-remove:hover{color:var(--cream)}

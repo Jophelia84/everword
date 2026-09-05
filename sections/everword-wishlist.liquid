@@ -1,0 +1,34 @@
+{% doc %}
+  The wishlist page. The list lives in the browser, so the server cannot know
+  what is on it — the grid is filled client-side from Shopify's product JSON.
+{% enddoc %}
+
+<section class="ew-scope" data-testid="everword-wishlist">
+  <div class="wrap">
+    <div class="allhead">
+      <h1>{{ section.settings.heading | default: page.title | default: 'Wishlist' }}</h1>
+      {%- if section.settings.body != blank -%}<p>{{ section.settings.body }}</p>{%- endif -%}
+    </div>
+
+    <everword-wishlist-list>
+      <div class="ew-grid" data-ew-grid></div>
+      <p class="count" data-ew-empty hidden>
+        {{ section.settings.empty_text | default: 'Nothing saved yet.' }}
+        <a href="{{ routes.all_products_collection_url }}">Start browsing</a>.
+      </p>
+    </everword-wishlist-list>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Everword wishlist",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Wishlist" },
+    { "type": "textarea", "id": "body", "label": "Standfirst", "default": "Saved on this device. Sign in to keep it with you." },
+    { "type": "text", "id": "empty_text", "label": "Empty message", "default": "Nothing saved yet." }
+  ],
+  "enabled_on": { "templates": ["page"] }
+}
+{% endschema %}

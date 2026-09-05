@@ -13,7 +13,7 @@
       "type": "everword-film-hero",
       "settings": {
         "show_video": true,
-        "video_alt": "One woman across four chapters of her life — a birthday, her graduation, the morning of her wedding, and her first baby — wearing a different personalised piece in each",
+        "video_alt": "One woman across four chapters of her life \u2014 a birthday, her graduation, the morning of her wedding, and her first baby \u2014 wearing a different personalised piece in each",
         "heading": "A gift for every chapter.",
         "body": "Names, birthstones and keepsakes, made after you order, boxed and ready to give.",
         "cta_label": "Shop by occasion"
@@ -22,15 +22,66 @@
     "doors": {
       "type": "everword-doors",
       "blocks": {
-        "d1": { "type": "door", "settings": { "title": "Birthdays", "caption": "The largest reason anyone buys" } },
-        "d2": { "type": "door", "settings": { "title": "In Memory", "caption": "For the ones we still talk to" } },
-        "d3": { "type": "door", "settings": { "title": "Anniversaries", "caption": "A date, said once, kept" } },
-        "d4": { "type": "door", "settings": { "title": "Milestones", "caption": "Graduations, and starting over" } },
-        "d5": { "type": "door", "settings": { "title": "For Him", "caption": "Engraved, and read by nobody else" } },
-        "d6": { "type": "door", "settings": { "title": "A New Baby", "caption": "The year nobody has words for" } }
+        "d1": {
+          "type": "door",
+          "settings": {
+            "title": "Birthdays",
+            "caption": "The largest reason anyone buys",
+            "default_asset": "ew-inline-50fc9ed24f.webp"
+          }
+        },
+        "d2": {
+          "type": "door",
+          "settings": {
+            "title": "In Memory",
+            "caption": "For the ones we still talk to",
+            "default_asset": "ew-inline-d42b38ee5d.webp"
+          }
+        },
+        "d3": {
+          "type": "door",
+          "settings": {
+            "title": "Anniversaries",
+            "caption": "A date, said once, kept",
+            "default_asset": "ew-inline-da5c90f02c.webp"
+          }
+        },
+        "d4": {
+          "type": "door",
+          "settings": {
+            "title": "Milestones",
+            "caption": "Graduations, and starting over",
+            "default_asset": "ew-inline-fd7f233c08.webp"
+          }
+        },
+        "d5": {
+          "type": "door",
+          "settings": {
+            "title": "For Him",
+            "caption": "Engraved, and read by nobody else",
+            "default_asset": "ew-inline-4a57c57c4a.webp"
+          }
+        },
+        "d6": {
+          "type": "door",
+          "settings": {
+            "title": "A New Baby",
+            "caption": "The year nobody has words for",
+            "default_asset": "ew-inline-0a254e50fb.webp"
+          }
+        }
       },
-      "block_order": ["d1", "d2", "d3", "d4", "d5", "d6"],
-      "settings": { "heading": "Shop by occasion" }
+      "block_order": [
+        "d1",
+        "d2",
+        "d3",
+        "d4",
+        "d5",
+        "d6"
+      ],
+      "settings": {
+        "heading": "Shop by occasion"
+      }
     },
     "shelf": {
       "type": "everword-shelf",
@@ -47,19 +98,61 @@
       "settings": {
         "heading": "Celebrate Yourself.",
         "body": "<p>The most important chapter is the one you are writing right now. From custom nameplates to birthstone keepsakes, craft a piece that honors your own journey, your own milestones, and your own story.</p>",
-        "cta_label": "Shop the collection"
+        "cta_label": "Shop the collection",
+        "default_asset": "ew-inline-804736e42f.webp"
       }
     },
     "promise": {
       "type": "everword-promise",
       "blocks": {
-        "p1": { "type": "promise", "settings": { "icon": "globe", "label": "Ships Worldwide" } },
-        "p2": { "type": "promise", "settings": { "icon": "sparkle", "label": "Made to Order" } },
-        "p3": { "type": "promise", "settings": { "icon": "gift", "label": "Lovingly Packaged" } },
-        "p4": { "type": "promise", "settings": { "icon": "knot", "label": "Made to Be Kept" } }
+        "p1": {
+          "type": "promise",
+          "settings": {
+            "icon": "globe",
+            "label": "Ships Worldwide"
+          }
+        },
+        "p2": {
+          "type": "promise",
+          "settings": {
+            "icon": "sparkle",
+            "label": "Made to Order"
+          }
+        },
+        "p3": {
+          "type": "promise",
+          "settings": {
+            "icon": "gift",
+            "label": "Lovingly Packaged"
+          }
+        },
+        "p4": {
+          "type": "promise",
+          "settings": {
+            "icon": "knot",
+            "label": "Made to Be Kept"
+          }
+        }
       },
-      "block_order": ["p1", "p2", "p3", "p4"]
+      "block_order": [
+        "p1",
+        "p2",
+        "p3",
+        "p4"
+      ],
+      "settings": {
+        "gap": 48,
+        "pad": 26,
+        "icon_size": 20,
+        "full_width_rules": true
+      }
     }
   },
-  "order": ["film_hero", "doors", "shelf", "about", "promise"]
+  "order": [
+    "film_hero",
+    "doors",
+    "shelf",
+    "about",
+    "promise"
+  ]
 }

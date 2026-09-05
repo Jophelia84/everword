@@ -1,0 +1,28 @@
+{% doc %}
+  Boots the wishlist and seeds it with whatever is stored against the customer.
+
+  The seed is read from the everword.wishlist customer metafield. A theme cannot
+  write that metafield — there is no storefront API for setting customer data —
+  so it is only ever read here, and an app proxy configured in theme settings is
+  what makes the list persist across devices.
+{% enddoc %}
+
+{%- liquid
+  assign saved = customer.metafields.everword.wishlist.value
+  if saved == blank
+    assign saved = ''
+    assign saved = saved | split: ','
+  endif
+-%}
+
+<script src="{{ 'everword-wishlist.js' | asset_url }}" defer="defer"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    if (!window.EverwordWishlist) return;
+    window.EverwordWishlist.configure({
+      loggedIn: {% if customer %}true{% else %}false{% endif %},
+      syncUrl: {{ settings.wishlist_sync_url | default: '' | json }},
+      seed: {{ saved | json }}
+    });
+  });
+</script>

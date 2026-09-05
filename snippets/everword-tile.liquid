@@ -34,7 +34,9 @@
   assign card_sizes = sizes | default: '(max-width: 760px) 50vw, (max-width: 1040px) 33vw, 25vw'
 -%}
 
-<a class="tile" href="{{ product.url }}" data-k="{{ product.handle }}">
+<div class="ew-tile-wrap">
+  {% render 'everword-wishlist-button', product: product, style: 'icon' %}
+  <a class="tile" href="{{ product.url }}" data-k="{{ product.handle }}">
   <div class="shot">
     {%- if img -%}
       <img
@@ -70,4 +72,5 @@
       {{ product.price | money }}
     {%- endif -%}
   </p>
-</a>
+  </a>
+</div>
