@@ -13,9 +13,8 @@
 
 {%- if product != blank and enabled -%}
   <div class="ew-scope" {{ block.shopify_attributes }}>
-    {% render 'everword-message-card',
-       product: product,
-       form_id: 'BuyButtons-ProductForm-' | append: section.id %}
+    {%- assign ew_form_id = 'BuyButtons-ProductForm-' | append: section.id -%}
+    {% render 'everword-message-card', product: product, form_id: ew_form_id %}
   </div>
   <script src="{{ 'everword-message-card.js' | asset_url }}" defer="defer"></script>
 {%- elsif request.design_mode -%}
