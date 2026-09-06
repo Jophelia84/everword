@@ -307,28 +307,71 @@ cart-items-component button[name='checkout'] {
    rule, so the page ended in two lines with a gap between them. */
 .ew-foot { border-top: 0; }
 
-/* ---------- the bag count ---------- */
-/* Horizon's cart bubble is position:relative, so dropped into this masthead it
-   sat beside the bag icon and pushed the row along instead of reading as a
-   badge on its corner. */
-.ew-nav cart-icon {
+/* ---------- the masthead utilities ---------- */
+/* Contact, wishlist, account and bag are one row of equal boxes. The bag
+   carries <header-actions> and <cart-icon> for Horizon's cart wiring, which
+   put it at a different DOM depth from its neighbours and gave it different
+   spacing — those two are flattened so all four sit on the same rhythm. */
+.ew-nav .mutil { display: flex; align-items: center; gap: 22px; }
+
+.ew-nav .mutil header-actions { display: contents; }
+.ew-nav cart-icon { display: inline-flex; align-items: center; justify-content: center; }
+
+.ew-nav .ew-util {
   position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  cursor: pointer;
 }
 
+.ew-nav .ew-util svg {
+  width: 17px;
+  height: 17px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.35;
+}
+
+/* One badge, two sources: our wishlist count and Horizon's cart bubble. They
+   are painted identically here so the pair never drift in size or colour. */
+.ew-nav .ew-badge,
 .ew-nav .cart-bubble {
   position: absolute;
-  top: -7px;
-  right: -10px;
-  width: 16px;
-  height: 16px;
-  min-width: 16px;
+  top: -6px;
+  right: -8px;
+  width: 15px;
+  height: 15px;
+  min-width: 15px;
+  border-radius: 50%;
+  background: var(--ink-2);
+  color: var(--ink);
+  font-family: 'Alegreya Sans', sans-serif;
+  font-size: 9px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0;
+  display: grid;
+  place-items: center;
   pointer-events: none;
+  padding: 0;
 }
 
-.ew-nav .cart-bubble__text { font-size: 9px; letter-spacing: 0; }
+/* Horizon paints its own disc behind the number; ours is the disc. */
+.ew-nav .cart-bubble__background { display: none; }
+.ew-nav .cart-bubble__text { font-size: 9px; color: inherit; letter-spacing: 0; }
 
-/* An empty cart shows no badge at all rather than an empty disc. */
-.ew-nav .cart-bubble.visually-hidden { display: none; }
+/* An empty cart or wishlist shows nothing rather than an empty disc. */
+.ew-nav .cart-bubble.visually-hidden,
+.ew-nav .ew-badge[hidden] { display: none; }
+
+@media (max-width: 860px) {
+  .ew-nav .mutil { gap: 18px; }
+}

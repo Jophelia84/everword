@@ -40,22 +40,32 @@
   <nav class="ew-nav">
     <div class="mtoprow">
       <span class="mutil">
-        {%- if section.settings.contact_page != blank -%}
-          <a href="{{ section.settings.contact_page.url }}" aria-label="Contact us" title="Contact us">
+        {%- comment -%}
+          All four utilities are the same shape: one .ew-util box, one icon, and
+          an optional badge. The bag needs <header-actions> and <cart-icon>
+          around it for Horizon's cart wiring, so those are flattened in CSS —
+          otherwise the extra elements gave the bag different spacing from its
+          neighbours.
+        {%- endcomment -%}
+
+        {%- if section.settings.show_contact -%}
+          <a class="ew-util" href="{{ section.settings.contact_page.url | default: '/pages/contact' }}"
+             aria-label="Contact us" title="Contact us">
             {% render 'everword-icon', name: 'bell' %}
           </a>
         {%- endif -%}
 
         {%- if section.settings.show_wishlist -%}
-          <a href="{{ settings.wishlist_page | default: '/pages/wishlist' }}"
-             class="ew-wish-link" aria-label="Wishlist" title="Wishlist">
+          <a class="ew-util" href="{{ settings.wishlist_page | default: '/pages/wishlist' }}"
+             aria-label="Wishlist" title="Wishlist">
             {% render 'everword-icon', name: 'wish' %}
-            <everword-wishlist-count class="bagn" hidden></everword-wishlist-count>
+            <everword-wishlist-count class="ew-badge" hidden></everword-wishlist-count>
           </a>
         {%- endif -%}
 
         {%- if section.settings.show_account -%}
-          <a href="{{ routes.account_url }}" aria-label="My account" title="My account">
+          <a class="ew-util" href="{{ routes.account_url }}"
+             aria-label="My account" title="My account">
             {% render 'everword-icon', name: 'account' %}
           </a>
         {%- endif -%}
@@ -63,6 +73,7 @@
         <header-actions>
           {%- if show_cart -%}
             <button
+              class="ew-util"
               type="button"
               on:click="#cart-drawer/toggle"
               aria-haspopup="dialog"
@@ -77,7 +88,7 @@
               </cart-icon>
             </button>
           {%- else -%}
-            <a href="{{ routes.cart_url }}" aria-label="{{ 'accessibility.cart' | t }}">
+            <a class="ew-util" href="{{ routes.cart_url }}" aria-label="{{ 'accessibility.cart' | t }}">
               <cart-icon>
                 {% render 'everword-icon', name: 'bag' %}
                 {% render 'cart-bubble', limit: 100 %}
@@ -235,6 +246,7 @@
     { "type": "image_picker", "id": "logo", "label": "Logo", "info": "Leave blank to set the wordmark in type." },
     { "type": "text", "id": "wordmark", "label": "Wordmark", "default": "Everword" },
     { "type": "text", "id": "tagline", "label": "Tagline" },
+    { "type": "checkbox", "id": "show_contact", "label": "Show the contact link", "default": true },
     { "type": "checkbox", "id": "show_wishlist", "label": "Show the wishlist", "default": true },
     { "type": "checkbox", "id": "show_account", "label": "Show the account link", "default": true },
     { "type": "page", "id": "contact_page", "label": "Contact page" }
