@@ -92,11 +92,20 @@ Local and remote lists are merged as a union, never replaced, so signing in on a
 new device does not discard what was saved before signing in. A product that has
 since been unpublished drops off the list rather than sitting there dead.
 
-**The sticky buy bar** submits Horizon's own product form by id rather than
-posting its own, so the selected variant, quantity and personalisation all go
-with it and there is a single add-to-cart path. It mirrors the price and the
-availability from the main buy panel by watching those elements, which keeps it
-correct without depending on the name or shape of any internal Horizon event.
+**The sticky buy bar is Horizon's**, not a custom one. Horizon already ships a
+sticky add-to-cart that tracks the selected variant and shares the product form;
+running a second bar alongside it was duplication. What it needed was for this
+theme's full-width add-to-cart rule to be held back inside it — stretching that
+button squeezed the title and price column until the text overlapped — and then
+Everword's shapes and type applied.
+
+**The gallery** is one hero image with a thumbnail rail down its left. Horizon
+supports that natively (carousel presentation, thumbnails, left position), so it
+is configured in `templates/product.json` rather than rebuilt.
+
+**The message card is built but not placed.** `blocks/everword-message-card`
+still exists with its phrase bank; add it to the product template in the theme
+editor to switch it back on.
 
 **Everything on the product form, cart and drawers is Horizon's, restyled.**
 `assets/everword-shopify.css` reaches into Horizon's own components rather than

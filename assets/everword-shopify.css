@@ -12,7 +12,10 @@
 
 /* ---------- buttons ---------- */
 /* Horizon's buttons are width:fit-content. On a product panel that is a column
-   of full-width fields, an add-to-cart that hugs its label reads as a mistake. */
+   of full-width fields, an add-to-cart that hugs its label reads as a mistake.
+   The sticky bar is excluded below — there the button sits in a row beside the
+   title and price, and stretching it squeezes that text to one character per
+   line until it overlaps the price. */
 .add-to-cart-button,
 .product-form-buttons .button,
 .shopify-payment-button__button--unbranded {
@@ -256,3 +259,76 @@ cart-items-component button[name='checkout'] {
 /* A collection with fewer pieces than the grid has columns was leaving a row
    of empty cells. Track sizing follows the count instead. */
 .ew-grid--sparse { grid-template-columns: repeat(auto-fit, minmax(240px, 320px)); justify-content: start; }
+
+/* ---------- Horizon's sticky add-to-cart ---------- */
+/* Kept in place of a second, custom bar: this one already tracks the selected
+   variant and shares the product form. It only needed the width rule above
+   held back, and Everword's shapes and type applied. */
+.sticky-add-to-cart .add-to-cart-button,
+.sticky-add-to-cart .button {
+  width: auto;
+  flex: 0 0 auto;
+  min-width: 200px;
+  border-radius: 2px;
+}
+
+.sticky-add-to-cart__bar {
+  border-radius: 2px;
+  border: 1px solid var(--line);
+  box-shadow: 0 18px 44px -30px rgba(20, 17, 58, 0.45);
+}
+
+.sticky-add-to-cart__title {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 17px;
+  line-height: 1.25;
+}
+
+.sticky-add-to-cart__variant {
+  font-family: 'Alegreya Sans', sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: var(--cream-dim);
+}
+
+.sticky-add-to-cart__image { border-radius: 2px; }
+
+/* ---------- gallery ---------- */
+/* One hero image with the thumbnail rail down its left, which is how the
+   source's product page read. Horizon supports this natively, so it is
+   configured in templates/product.json rather than rebuilt here. */
+.product-media-container,
+.product-media-gallery__thumbnail {
+  border-radius: 2px;
+}
+
+/* ---------- footer ---------- */
+/* The rule above the footer columns sat right under the promise row's own
+   rule, so the page ended in two lines with a gap between them. */
+.ew-foot { border-top: 0; }
+
+/* ---------- the bag count ---------- */
+/* Horizon's cart bubble is position:relative, so dropped into this masthead it
+   sat beside the bag icon and pushed the row along instead of reading as a
+   badge on its corner. */
+.ew-nav cart-icon {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ew-nav .cart-bubble {
+  position: absolute;
+  top: -7px;
+  right: -10px;
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+  pointer-events: none;
+}
+
+.ew-nav .cart-bubble__text { font-size: 9px; letter-spacing: 0; }
+
+/* An empty cart shows no badge at all rather than an empty disc. */
+.ew-nav .cart-bubble.visually-hidden { display: none; }

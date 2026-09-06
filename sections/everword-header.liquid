@@ -116,7 +116,10 @@
         {%- if show_cart -%}
           <button type="button" on:click="#cart-drawer/toggle" aria-controls="cart-drawer"
                   aria-label="{{ 'accessibility.cart' | t }}">
-            {% render 'everword-icon', name: 'bag' %}
+            <cart-icon>
+              {% render 'everword-icon', name: 'bag' %}
+              {% render 'cart-bubble', limit: 100 %}
+            </cart-icon>
           </button>
         {%- endif -%}
       </span>
