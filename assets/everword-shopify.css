@@ -109,6 +109,23 @@ cart-drawer-component dialog,
 }
 
 /* ---------- the cart page ---------- */
+/* Real selectors, taken from Horizon's cart snippets rather than guessed. */
+.cart-items__details,
+.cart-items__product-info a { font-family: 'Cormorant Garamond', Georgia, serif; font-size: 17px; }
+
+.cart-items__price,
+.cart-items__price-unit { font-family: 'Alegreya Sans', sans-serif; letter-spacing: 0.04em; }
+
+.cart__checkout-button.button,
+.cart__checkout-button {
+  border-radius: 2px;
+  font-family: 'Alegreya Sans', sans-serif;
+  font-size: 13px;
+  letter-spacing: 0.19em;
+  text-transform: uppercase;
+  padding-block: 20px;
+}
+
 /* Horizon's cart is a compact utility page. Everword's is the last thing
    somebody reads before paying for something with a name cut into it, so it
    gets the same air and the same serif as the rest of the shop. */
@@ -203,3 +220,39 @@ cart-items-component button[name='checkout'] {
 @media(prefers-reduced-motion:reduce){
   .ew-optin__scrim,.ew-optin__panel{transition:none}
 }
+
+/* ---------- corrections from the first live install ---------- */
+
+/* The product title is Prata in the source, where section headings are
+   Cormorant. Horizon gives both the heading family, so the title is named. */
+.shopify-section product-details h1,
+.product-details h1,
+[class*='cart-title'],
+.cart-page h1 {
+  font-family: 'Prata', Georgia, serif;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+}
+
+/* Variant options: hairline, quiet, gold once chosen. Horizon stacks them
+   full width and fills the selected one solid, which reads as a form control
+   rather than a choice between two finishes. */
+.variant-option__button-label__text {
+  border-radius: 2px;
+  padding: 12px 18px;
+}
+
+/* The promo bar's text colour is a literal cream, so if its background ever
+   fails to resolve it is invisible on a white page. This is the safety net. */
+.promo { background: var(--ink-2, #14113A); }
+
+/* The footer sat 112px below whatever preceded it, and its own rule sat
+   another 64px below that. On a page that already ends in a ruled promise row
+   that is three horizontal lines and a lot of nothing. */
+.ew-foot { margin-top: 56px; padding-block: 44px 32px; }
+.ew-foot .fcols { gap: 28px; }
+.ew-foot .nlet { margin-top: 36px; padding-top: 28px; }
+
+/* A collection with fewer pieces than the grid has columns was leaving a row
+   of empty cells. Track sizing follows the count instead. */
+.ew-grid--sparse { grid-template-columns: repeat(auto-fit, minmax(240px, 320px)); justify-content: start; }

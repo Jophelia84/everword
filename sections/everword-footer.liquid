@@ -6,8 +6,16 @@
 <footer class="ew-scope ew-foot" data-testid="everword-footer">
   <div class="wrap foot">
     <div class="fcols">
+      {%- comment -%}
+        A column whose menu has no links is an empty heading with a hole under
+        it. It stays visible in the editor, where it is the thing you are about
+        to configure, and is left out on the live site until it has links.
+      {%- endcomment -%}
       {%- for block in section.blocks -%}
         {%- assign menu = block.settings.menu -%}
+        {%- if menu.links.size == 0 and request.design_mode == false -%}
+          {%- continue -%}
+        {%- endif -%}
         <div {{ block.shopify_attributes }}>
           <h4>{{ block.settings.title | default: menu.title }}</h4>
           {%- for link in menu.links -%}

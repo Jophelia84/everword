@@ -1,47 +1,121 @@
 {% doc %}
-  Emits the Everword design tokens the ported v94 stylesheet reads, sourced
-  from theme settings so the theme editor still drives the palette.
+  Everword's design tokens, and the overrides that make Horizon's own
+  components inherit them.
 
-  A note on the names: the source stylesheet defined :root twice. The second
-  block (line 405 of the standalone build) superseded the first and inverted
-  the palette from dark to light without renaming the variables. So --ink is
-  the warm-white page ground and --cream is the near-black text, not the other
-  way round. The names are kept as-is so the 1200 lines of ported CSS did not
-  have to be rewritten.
+  Why the fallbacks matter. Anything that depended on config/settings_data.json
+  resolving — the fonts, the button colours, the palette — was rendering at
+  Horizon's defaults on a live install: sans-serif headings, black pill buttons,
+  and a promo bar with no background at all (its text colour is a literal, so
+  cream-on-white made it invisible). Everything driven by literal CSS rendered
+  correctly. So every token now carries an Everword literal as its fallback,
+  and the identity holds whether or not a setting resolves.
+
+  The five palette settings still drive everything when they do resolve, so the
+  theme editor keeps control; the rest is derived from them rather than read
+  from separate settings that may not have applied.
+
+  A note on the names: the source stylesheet defined :root twice, and the second
+  block superseded the first and inverted the palette without renaming the
+  variables. So --ink is the warm-white page ground and --cream is the
+  near-black text, not the other way round.
 {% enddoc %}
 
 {%- liquid
-  assign paper = settings.color_palette.background
-  assign text = settings.color_palette.foreground
-  assign navy = settings.color_palette.color1
-  assign gold = settings.color_palette.color2
-  assign tile = settings.color_palette.color3
+  assign paper = settings.color_palette.background | default: '#FCFBF8'
+  assign text = settings.color_palette.foreground | default: '#211C1A'
+  assign navy = settings.color_palette.color1 | default: '#14113A'
+  assign gold = settings.color_palette.color2 | default: '#A8813A'
+  assign tile = settings.color_palette.color3 | default: '#F1EFEA'
+
+  comment
+    color_modify works on a colour string as well as a colour object, so these
+    survive the fallbacks above. Reading .rgb off a fallback string would not.
+  endcomment
+  assign line = text | color_modify: 'alpha', 0.14
+  assign muted = text | color_modify: 'alpha', 0.66
+  assign faint = text | color_modify: 'alpha', 0.07
+
+  assign serif = "'Cormorant Garamond', Georgia, serif"
+  assign display = "'Prata', Georgia, serif"
+  assign sans = "'Alegreya Sans', -apple-system, BlinkMacSystemFont, sans-serif"
+  assign body = "'Jost', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif"
 -%}
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Prata&family=Alegreya+Sans:wght@300;400&family=Jost:wght@300;400&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Prata&family=Alegreya+Sans:wght@300;400;500&family=Jost:wght@300;400&display=swap">
 
 {% style %}
   :root {
+    /* ---- Everword tokens ---- */
     --ink: {{ paper }};
     --ink-2: {{ navy }};
     --cream: {{ text }};
-    --cream-dim: rgb({{ text.rgb }} / 0.66);
+    --cream-dim: {{ muted }};
     --gold: {{ gold }};
-    --line: rgb({{ text.rgb }} / 0.14);
+    --line: {{ line }};
     --nav-bg: {{ paper }};
     --tile: {{ tile }};
-    --mute: rgb({{ text.rgb }} / 0.66);
-    --display: 'Cormorant Garamond', Georgia, serif;
-    /* The source referenced var(--body) but never defined it, so every rule
-       using it was silently dropped. Defining it makes those rules work. */
-    --body: 'Jost', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+    --mute: {{ muted }};
+    --display: {{ serif }};
+    --body: {{ body }};
     --ew-hero-poster: url({{ 'ew-inline-689653544f.webp' | asset_url }});
     --navh: 96px;
+
+    /* ---- Horizon's own type, so its cart, buttons and headings follow ---- */
+    --font-heading--family: {{ serif }};
+    --font-heading--weight: 400;
+    --font-heading--style: normal;
+    --font-body--family: {{ body }};
+    --font-body--weight: 300;
+    --font-body--style: normal;
+    --font-subheading--family: {{ sans }};
+    --font-subheading--weight: 400;
+    --font-subheading--style: normal;
+    --font-accent--family: {{ display }};
+    --font-accent--weight: 400;
+    --font-accent--style: normal;
+    --font-paragraph--family: {{ body }};
+    --button-font-family-primary: {{ sans }};
+    --button-font-family-secondary: {{ sans }};
+
+    /* ---- Horizon's own colour and shape ---- */
+    --button-radius: 2px;
+    --color-primary-button-background: {{ navy }};
+    --color-primary-button-text: {{ paper }};
+    --color-primary-button-border: {{ navy }};
+    --color-primary-button-hover-background: {{ text }};
+    --color-primary-button-hover-text: {{ paper }};
+    --color-primary-button-hover-border: {{ text }};
+    --color-secondary-button-background: transparent;
+    --color-secondary-button-text: {{ text }};
+    --color-secondary-button-border: {{ line }};
+    --color-secondary-button-hover-text: {{ text }};
+    --color-secondary-button-hover-background: {{ tile }};
+    --color-secondary-button-hover-border: {{ text }};
+
+    /* Unselected reads as a hairline; chosen reads as gold. The source never
+       filled an option in solid, which is what made the picker feel quiet. */
+    --color-variant-background: transparent;
+    --color-variant-text: {{ text }};
+    --color-variant-border: {{ line }};
+    --color-variant-hover-background: transparent;
+    --color-variant-hover-text: {{ text }};
+    --color-variant-hover-border: {{ muted }};
+    --color-selected-variant-background: transparent;
+    --color-selected-variant-text: {{ text }};
+    --color-selected-variant-border: {{ gold }};
+    --color-selected-variant-hover-background: transparent;
+    --color-selected-variant-hover-text: {{ text }};
+    --color-selected-variant-hover-border: {{ gold }};
+
+    --color-input-background: {{ paper }};
+    --color-input-text: {{ text }};
+    --color-input-border: {{ line }};
   }
+
   body {
-    font-family: 'Jost', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+    font-family: {{ body }};
     font-weight: 300;
     -webkit-font-smoothing: antialiased;
   }

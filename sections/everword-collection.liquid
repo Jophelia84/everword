@@ -46,7 +46,11 @@
       </p>
 
       {%- if collection.products.size > 0 -%}
-        <div class="ew-grid">
+        {%- comment -%}
+          Four fixed columns leave a row of empty cells on a small collection,
+          which reads as a page that failed to load rather than a short one.
+        {%- endcomment -%}
+        <div class="ew-grid{% if collection.products.size < 4 %} ew-grid--sparse{% endif %}">
           {%- for product in collection.products -%}
             {%- liquid
               assign loading = 'lazy'
