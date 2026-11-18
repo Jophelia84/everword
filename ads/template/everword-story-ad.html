@@ -1,0 +1,202 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Prata&family=Alegreya+Sans:wght@400;500;700&display=block" rel="stylesheet">
+<style>
+:root{--paper:#FCFBF8;--tile:#F1EFEA;--ink:#211C1A;--muted:rgba(33,28,26,.62);--navy:#14113A;--gold:#A8813A}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:var(--H);overflow:hidden;background:var(--paper)}
+#stage{position:relative;width:1080px;height:var(--H);overflow:hidden;background:var(--paper)}
+.abs{position:absolute}
+.disp{font-family:'Prata',Georgia,serif;color:var(--navy);letter-spacing:-.025em}
+.eyebrow{font-family:'Alegreya Sans';font-weight:700;font-size:24px;letter-spacing:.2em;text-transform:uppercase}
+.cap{position:absolute;left:72px;right:72px;opacity:0}
+.cap span{display:block}
+#art{position:absolute;transform-origin:0 0}
+svg .ln{fill:none;stroke:var(--navy);stroke-width:7;stroke-linecap:round;stroke-linejoin:round}
+svg .gd{fill:none;stroke:var(--gold);stroke-width:6;stroke-linecap:round;stroke-linejoin:round}
+svg text{font-family:'Alegreya Sans';font-weight:700;letter-spacing:.12em;fill:var(--navy)}
+#end{position:absolute;inset:0;opacity:0;text-align:center}
+#end .l{display:block;opacity:0}
+.btn{display:inline-block;background:var(--navy);color:var(--paper);font-family:'Alegreya Sans';font-weight:700;
+  font-size:30px;letter-spacing:.09em;text-transform:uppercase;padding:30px 52px;border-radius:2px}
+.slot{position:relative;margin:0 auto;background:var(--tile)}
+.slot .ph{position:absolute;inset:16px;border:2px dashed rgba(33,28,26,.22);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px}
+.slot .ph svg{width:56px;height:56px;opacity:.38}
+.slot .ph b{font-family:'Alegreya Sans';font-weight:700;font-size:24px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+.slot .ph i{font-family:'Alegreya Sans';font-style:normal;font-size:22px;color:rgba(33,28,26,.45)}
+.slot .fill{position:absolute;inset:0;background-size:cover;background-position:center}
+</style></head>
+<body><div id="stage">
+  <div id="caps"></div>
+  <div id="art"><svg id="svg" width="1080" height="1080" viewBox="0 0 1080 1080"></svg></div>
+  <div id="end"></div>
+</div>
+<script>
+/* ================= EDIT HERE ================= */
+const AD = {
+  names: ['Ella','Max','Otis','June'],
+  captions: [
+    ['Grandma never asks', 'for anything.'],
+    ['She only ever asks', 'about them.'],
+    ['Now they’re grown', 'and far away.'],
+    ['So we gave her', 'all of them.'],
+    ['Now they’re with her', 'every day.'],
+  ],
+  year: 'Christmas 2026',
+  product: null,            // product photo for the end card, e.g. 'img/ornament.jpg'
+  end: { eyebrow:'A gift for every chapter', headline:['Everyone she loves,','in one place.'],
+         cta:'Find their gift', url:'shopeverword.com', note:'Free standard US shipping' },
+};
+/* ============================================ */
+
+const P=new URLSearchParams(location.search);
+const H=+P.get('h')||1920, TALL=H>1600;
+document.documentElement.style.setProperty('--H',H+'px');
+const $=id=>document.getElementById(id);
+const clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x));
+const ease=x=>{x=clamp(x);return 1-Math.pow(1-x,3)};
+const inout=x=>{x=clamp(x);return x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2};
+const back=x=>{x=clamp(x);const c=1.9;return 1+(c+1)*Math.pow(x-1,3)+c*Math.pow(x-1,2)};
+const NS='http://www.w3.org/2000/svg';
+const svg=$('svg');
+function mk(tag,attrs,parent=svg){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);parent.appendChild(e);return e}
+function draw(e,p){e.style.strokeDasharray=1;e.style.strokeDashoffset=1-clamp(p);e.style.opacity=p>0?1:0}
+function stroke(d,cls='ln',parent=svg){return mk('path',{d,class:cls,pathLength:1},parent)}
+
+/* ---------- format layout ---------- */
+const LAY = TALL ? {cap:250, art:{x:0,y:600,s:1}} : {cap:56, art:{x:90,y:300,s:.84}};
+$('art').style.left=LAY.art.x+'px';$('art').style.top=LAY.art.y+'px';$('art').style.transform=`scale(${LAY.art.s})`;
+
+/* ---------- captions ---------- */
+const caps=AD.captions.map((c,i)=>{const d=document.createElement('div');d.className='cap disp';
+  d.style.top=LAY.cap+'px';d.style.fontSize=(TALL?84:72)+'px';d.style.lineHeight=1.04;
+  d.innerHTML=c.map((s,j)=>`<span style="${i===3&&j===1?'color:var(--gold)':''}">${s}</span>`).join('');
+  $('caps').appendChild(d);return d});
+
+/* ---------- scene: floor, chair, grandma ---------- */
+const scene=mk('g',{});
+const floor=stroke('M90 900 L990 900','ln',scene);
+const chair=[
+  'M432 700 L432 488 Q540 430 648 488 L648 700',
+  'M398 712 L398 628 Q398 604 422 604 L432 604',
+  'M682 712 L682 628 Q682 604 658 604 L648 604',
+  'M398 712 L682 712 Q690 712 690 724 L690 752 L390 752 L390 724 Q390 712 398 712',
+  'M418 752 L418 900','M662 752 L662 900'].map(d=>stroke(d,'ln',scene));
+const gma=[
+  ['c',540,520,44],['c',540,462,17],
+  ['p','M540 566 L540 590'],
+  ['p','M540 588 L486 744 L594 744 Z'],
+  ['p','M524 600 Q492 660 528 700'],['p','M556 600 Q588 660 552 700'],
+  ['p','M512 744 L512 884 L492 884'],['p','M568 744 L568 884 L588 884'],
+  ['c',525,522,10],['c',555,522,10],['p','M535 522 L545 522'],
+  ['p','M526 540 Q540 550 554 540'],
+].map(g=>g[0]==='c'?mk('circle',{cx:g[1],cy:g[2],r:g[3],class:'ln',pathLength:1},scene):stroke(g[1],'ln',scene));
+gma.slice(8).forEach(e=>e.style.strokeWidth=4);
+
+/* ---------- kids ---------- */
+const KIDS=[{x:190,h:250,hair:'pigtails'},{x:320,h:300,hair:'cap'},{x:760,h:280,hair:'none'},{x:890,h:230,hair:'bow'}];
+const kids=KIDS.map((k,i)=>{
+  const g=mk('g',{}),inner=mk('g',{},g);
+  const L=k.h*.32,T=k.h*.34,r=k.h*.12,hip=-L,sh=-L-T,hy=sh-r-6;
+  mk('circle',{cx:0,cy:hy,r,class:'ln'},inner);
+  stroke(`M0 ${sh+4} L0 ${hip}`,'ln',inner);
+  const armL=mk('path',{d:`M0 ${sh+14} L${-k.h*.17} ${sh+T*.62}`,class:'ln'},inner);
+  const armR=mk('path',{d:`M0 ${sh+14} L${k.h*.17} ${sh+T*.62}`,class:'ln'},inner);
+  const legL=mk('path',{d:`M0 ${hip} L${-k.h*.11} 0`,class:'ln'},inner);
+  const legR=mk('path',{d:`M0 ${hip} L${k.h*.11} 0`,class:'ln'},inner);
+  if(k.hair==='pigtails'){stroke(`M${-r} ${hy-4} q-22 6 -18 30`,'ln',inner);stroke(`M${r} ${hy-4} q22 6 18 30`,'ln',inner)}
+  if(k.hair==='cap'){stroke(`M${-r} ${hy-6} Q0 ${hy-r*1.9} ${r} ${hy-6} L${r+24} ${hy-6}`,'ln',inner)}
+  if(k.hair==='bow'){stroke(`M${r*.3} ${hy-r} l14 -14 l0 22 z M${r*.3} ${hy-r} l-14 -14 l0 22 z`,'gd',inner)}
+  const name=mk('text',{x:0,y:hy-r-30,'text-anchor':'middle','font-size':30},inner);name.textContent=AD.names[i].toUpperCase();
+  return {g,inner,legL,legR,armL,armR,k,name,headY:hy,hip};
+});
+
+/* ---------- connection lines + hearts ---------- */
+const lines=kids.map(()=>mk('path',{class:'gd','stroke-dasharray':'2 16',style:'stroke-width:5;opacity:0'}));
+const HEART='M0 6 C0 -4 -14 -6 -14 4 C-14 12 -4 18 0 24 C4 18 14 12 14 4 C14 -6 0 -4 0 6 Z';
+const hearts=[...Array(8)].map(()=>mk('path',{d:HEART,fill:'#A8813A',opacity:0}));
+
+/* ---------- ornament ---------- */
+const orn=mk('g',{});
+const oc=mk('circle',{cx:540,cy:540,r:250,class:'ln',pathLength:1,style:'fill:#FCFBF8'},orn);
+const ocap=stroke('M500 290 L500 262 L580 262 L580 290','ln',orn);
+const oloop=stroke('M520 262 Q540 210 560 262','gd',orn);
+const oinner=mk('circle',{cx:540,cy:540,r:222,class:'gd',pathLength:1,style:'stroke-width:3'},orn);
+const NP=[[430,500],[650,500],[430,600],[650,600]];
+const onames=AD.names.map((n,i)=>{const t=mk('text',{x:NP[i][0],y:NP[i][1],'text-anchor':'middle','font-size':46,opacity:0},orn);
+  t.textContent=n;t.style.fontFamily='Prata';t.style.letterSpacing='0';t.style.fontWeight=400;return t});
+const ostar=stroke('M540 410 l9 20 22 3 -16 15 4 22 -19 -11 -19 11 4 -22 -16 -15 22 -3 z','gd',orn);
+const oyear=mk('text',{x:540,y:700,'text-anchor':'middle','font-size':26,opacity:0},orn);oyear.textContent=AD.year.toUpperCase();oyear.style.fill='#A8813A';
+
+/* ---------- end card ---------- */
+const E=AD.end, slotS=TALL?620:430;
+const IMG='<svg viewBox="0 0 24 24" fill="none" stroke="#211C1A" stroke-width="1.3"><rect x="3" y="4" width="18" height="16" rx="1"/><circle cx="9" cy="10" r="2"/><path d="M3 18l5-5 4 4 3-3 6 6"/></svg>';
+$('end').innerHTML=`<div style="position:absolute;left:0;right:0;top:${TALL?250:64}px">
+  <span class="l eyebrow" style="color:var(--gold);margin-bottom:${TALL?40:28}px">${E.eyebrow}</span>
+  <span class="l"><div class="slot" style="width:${slotS}px;height:${slotS}px">${AD.product?`<div class="fill" style="background-image:url('${AD.product}')"></div>`:`<div class="ph">${IMG}<b>Product photo</b><i>The gift, with their names · 1:1</i></div>`}</div></span>
+  <span class="l disp" style="font-size:${TALL?84:70}px;line-height:1.04;margin-top:${TALL?60:40}px">${E.headline[0]}</span>
+  <span class="l disp" style="font-size:${TALL?84:70}px;line-height:1.04;color:var(--gold)">${E.headline[1]}</span>
+  <span class="l" style="margin-top:${TALL?56:40}px"><span class="btn">${E.cta} &nbsp;→</span></span>
+  <span class="l" style="font-family:'Alegreya Sans';font-size:34px;font-weight:500;color:var(--ink);margin-top:${TALL?40:28}px">${E.url}</span>
+  <span class="l eyebrow" style="font-size:21px;color:var(--muted);margin-top:14px">${E.note}</span></div>`;
+
+/* ---------- timeline ---------- */
+const B=[[0,2.8],[2.8,6.2],[6.2,8.9],[8.9,12.6],[12.6,14.6]], END=14.4, DUR=18;
+const glow=mk('path',{d:HEART,fill:'#A8813A',opacity:0});
+const capWin=(t,a,b)=>Math.min(clamp((t-a)/.35),clamp((b-t)/.3));
+function bez(p0,p1,p2,u){return [(1-u)*(1-u)*p0[0]+2*(1-u)*u*p1[0]+u*u*p2[0],(1-u)*(1-u)*p0[1]+2*(1-u)*u*p1[1]+u*u*p2[1]]}
+
+window.render=function(t){
+  caps.forEach((c,i)=>{const[a,b]=B[i];const o=capWin(t,a+.1,i===4?END:b);c.style.opacity=o;c.style.transform=`translateY(${(1-ease((t-a-.1)/.5))*24}px)`});
+
+  // scene draw-in, then fade at beat 4
+  const sceneO=1-clamp((t-B[3][0])/.5)+clamp((t-B[4][0]-.1)/.6);scene.style.opacity=clamp(sceneO);
+  draw(floor,(t-.1)/.7);
+  chair.forEach((e,i)=>draw(e,(t-.25-i*.08)/.6));
+  gma.forEach((e,i)=>draw(e,(t-.6-i*.06)/.5));
+
+  // kids pop in, then walk away
+  kids.forEach((kd,i)=>{
+    const a=B[1][0]+.2+i*.22, p=back((t-a)/.5);
+    const left=kd.k.x<540, wa=B[2][0]+.15+(left?1-(i%2):i%2)*.25, w=inout((t-wa)/2.1);
+    const dx=w*(left?-900:900);
+    const walking=t>wa&&w<1, sw=walking?Math.sin((t-wa)*13)*22:0;
+    kd.g.setAttribute('transform',`translate(${kd.k.x+dx},900)`);
+    kd.inner.setAttribute('transform',`scale(${clamp(p,0,1.3)})${walking?` translate(0,${-Math.abs(Math.sin((t-wa)*13))*6})`:''}`);
+    kd.inner.style.opacity=t<a?0:1;
+    kd.legL.setAttribute('transform',`rotate(${sw} 0 ${kd.hip})`);kd.legR.setAttribute('transform',`rotate(${-sw} 0 ${kd.hip})`);
+    kd.name.style.opacity=ease((t-a-.3)/.4)*(1-w*1.6);
+    // gold dotted line from grandma to the child as they leave
+    const lo=clamp((t-wa)/.3)*(1-clamp((t-B[3][0])/.4));
+    const hx=kd.k.x+dx, hy=900+kd.headY*clamp(p,0,1);
+    lines[i].setAttribute('d',`M540 560 Q${(540+hx)/2} ${Math.min(hy,560)-120} ${hx} ${hy}`);lines[i].style.opacity=lo;
+  });
+
+  // hearts: beat 2 from grandma to each child; beat 4 from off-screen into the ornament
+  hearts.forEach((h,j)=>{
+    const i=j%4; let pos=null,sc=1;
+    if(j<4){const a=B[1][0]+1.3+i*.28,u=ease((t-a)/1.0);
+      if(t>a&&u<1){const kd=kids[i];const end=[kd.k.x,900+kd.headY-40];pos=bez([540,500],[(540+end[0])/2,330],end,u);sc=.8+.6*Math.sin(u*Math.PI)}}
+    else{const a=B[3][0]+.9+i*.32,u=inout((t-a)/.8);
+      if(t>a&&u<1){const start=[i<2?-80:1160,i%2?820:300];const end=NP[i];pos=bez(start,[540,i%2?950:120],[end[0],end[1]-30],u);sc=1.4}}
+    if(pos){h.setAttribute('transform',`translate(${pos[0]},${pos[1]}) scale(${sc})`);h.setAttribute('opacity',1)}else h.setAttribute('opacity',0);
+  });
+
+  // ornament draws in, names land, gentle sway
+  const oa=B[3][0]+.2;
+  orn.style.opacity=1-clamp((t-END)/.4);
+  draw(oc,(t-oa)/.9);draw(ocap,(t-oa-.5)/.4);draw(oloop,(t-oa-.7)/.4);draw(oinner,(t-oa-.6)/.9);draw(ostar,(t-oa-2.4)/.5);
+  onames.forEach((n,i)=>{const at=B[3][0]+1.7+i*.32;const p=back((t-at)/.45);n.setAttribute('opacity',clamp(p));n.setAttribute('transform',`translate(${NP[i][0]},${NP[i][1]}) scale(${clamp(p,0,1.2)}) translate(${-NP[i][0]},${-NP[i][1]})`)});
+  oyear.setAttribute('opacity',ease((t-oa-2.6)/.5));
+  const k=inout((t-B[4][0])/1.0), os=1-k*.68, ox=540, oy=540+k*150;
+  orn.setAttribute('transform',`translate(${ox},${oy}) scale(${os}) translate(-540,-540) rotate(${t>oa?Math.sin((t-oa)*1.6)*2.2*(1-k):0} 540 212)`);
+  const gp=clamp((t-B[4][0]-1)/.4);glow.setAttribute('opacity',gp*(1-clamp((t-END)/.4)));glow.setAttribute('transform',`translate(540,${410-gp*20}) scale(${1.2+Math.sin(t*5)*.12})`);
+
+  // end card
+  $('art').style.opacity=1-clamp((t-END)/.4);
+  $('end').style.opacity=clamp((t-END)/.3);
+  [...$('end').querySelectorAll('.l')].forEach((s,i)=>{const p=ease((t-END-.15-i*.13)/.7);s.style.opacity=p;s.style.transform=`translateY(${(1-p)*24}px)`});
+};
+window.DUR=DUR;
+render(0);
+</script></body></html>
