@@ -1,0 +1,134 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Prata&family=Alegreya+Sans:wght@400;500;700&family=Cormorant+Garamond:ital,wght@1,500&display=block" rel="stylesheet">
+<style>
+:root{--paper:#FCFBF8;--tile:#F1EFEA;--ink:#211C1A;--muted:rgba(33,28,26,.62);--navy:#14113A;--gold:#A8813A}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:var(--H);overflow:hidden;background:var(--paper)}
+#stage{position:relative;width:1080px;height:var(--H);overflow:hidden;background:var(--paper)}
+.abs{position:absolute}
+.disp{font-family:'Prata',Georgia,serif;color:var(--navy);letter-spacing:-.025em}
+.eyebrow{font-family:'Alegreya Sans';font-weight:700;font-size:24px;letter-spacing:.2em;text-transform:uppercase}
+.lab{position:absolute;font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:500;font-size:46px;color:var(--ink);white-space:nowrap}
+.lab span{display:inline-block;opacity:0}
+.flipwrap{position:absolute;perspective:2400px}
+.card{position:absolute;inset:0;transform-style:preserve-3d}
+.face{position:absolute;inset:0;backface-visibility:hidden;background:var(--tile);overflow:hidden}
+.face.back{transform:rotateY(180deg)}
+.face .ph{position:absolute;inset:18px;border:2px dashed rgba(33,28,26,.22);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;text-align:center}
+.face .ph svg{width:64px;height:64px;opacity:.38}
+.face .ph b{font-family:'Alegreya Sans';font-weight:700;font-size:26px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+.face .ph i{font-family:'Alegreya Sans';font-style:normal;font-size:24px;color:rgba(33,28,26,.45)}
+.face .fill{position:absolute;inset:0;background-size:cover;background-position:center}
+#arrows{position:absolute;left:0;top:0;pointer-events:none}
+#arrows path{fill:none;stroke:var(--navy);stroke-width:3.5;stroke-linecap:round;stroke-dasharray:3 13}
+#arrows .head{stroke-dasharray:none}
+.cap{position:absolute;left:0;right:0;text-align:center;font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:500;color:var(--ink);opacity:0}
+#end{position:absolute;inset:0;opacity:0;text-align:center;background:var(--paper)}
+#end .l{display:block;opacity:0}
+.btn{display:inline-block;background:var(--navy);color:var(--paper);font-family:'Alegreya Sans';font-weight:700;
+  font-size:30px;letter-spacing:.09em;text-transform:uppercase;padding:30px 52px;border-radius:2px}
+</style></head>
+<body><div id="stage">
+  <div class="abs disp" id="hook"></div>
+  <div class="flipwrap" id="fw"><div class="card" id="card"><div class="face front" id="front"></div><div class="face back" id="back"></div></div></div>
+  <svg id="arrows" width="1080"></svg>
+  <div id="labs"></div>
+  <div class="cap" id="cap"></div>
+  <div id="end"></div>
+</div>
+<script>
+/* ================= EDIT HERE ================= */
+const AD = {
+  hook: ['What makes it', 'theirs:'],
+  front: null,   // product photo, front
+  back: null,    // product photo, back
+  labels: ['Their name','Their birthstone','The day it all began','A word only you two get'],
+  backCaption: 'and your words on the back 🤍',
+  end: { headline:['You bring the words.','We keep them forever.'], cta:'Find their gift', url:'shopeverword.com', note:'Free standard US shipping' },
+};
+/* ============================================ */
+const P=new URLSearchParams(location.search);
+const H=+P.get('h')||1920, TALL=H>1600;
+document.documentElement.style.setProperty('--H',H+'px');
+const $=id=>document.getElementById(id);
+const clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x));
+const ease=x=>{x=clamp(x);return 1-Math.pow(1-x,3)};
+const inout=x=>{x=clamp(x);return x<.5?4*x*x*x:1-Math.pow(-2*x+2,3)/2};
+const IMG='<svg viewBox="0 0 24 24" fill="none" stroke="#211C1A" stroke-width="1.3"><rect x="3" y="4" width="18" height="16" rx="1"/><circle cx="9" cy="10" r="2"/><path d="M3 18l5-5 4 4 3-3 6 6"/></svg>';
+const face=(src,label,sub)=>src?`<div class="fill" style="background-image:url('${src}')"></div>`:`<div class="ph">${IMG}<b>${label}</b><i>${sub}</i></div>`;
+
+// layout: product box centred, labels in the four corners around it
+const S = TALL ? 720 : 520;
+const BX=(1080-S)/2, BY= TALL ? 610 : 330;
+const HOOK_Y = TALL ? 250 : 64;
+$('hook').style.cssText+=`left:72px;top:${HOOK_Y}px;font-size:${TALL?92:76}px;line-height:1.02`;
+$('hook').innerHTML=AD.hook.map((h,i)=>`<span style="display:block;opacity:0;${i?'color:var(--gold)':''}">${h}</span>`).join('');
+Object.assign($('fw').style,{left:BX+'px',top:BY+'px',width:S+'px',height:S+'px'});
+$('front').innerHTML=face(AD.front,'Product photo · front','Square, plain background');
+$('back').innerHTML=face(AD.back,'Product photo · back','The engraved side');
+$('arrows').setAttribute('height',H);
+
+// label anchors (label position, arrow from near label to a point on the product)
+const gap=TALL?150:120;
+const L=[
+  {x:72,  y:BY-gap+10,       a:[230,BY-gap+80],   b:[BX+S*.30,BY+S*.22], align:'left'},
+  {x:1008,y:BY-gap+10,       a:[860,BY-gap+80],   b:[BX+S*.74,BY+S*.30], align:'right'},
+  {x:72,  y:BY+S+gap-60,     a:[200,BY+S+gap-80], b:[BX+S*.26,BY+S*.80], align:'left'},
+  {x:1008,y:BY+S+gap-60,     a:[870,BY+S+gap-80], b:[BX+S*.72,BY+S*.76], align:'right'},
+];
+if(!TALL){L[0].y=BY-70;L[1].y=BY-70;L[0].a=[180,BY-10];L[1].a=[900,BY-10];L[2].y=BY+S+30;L[3].y=BY+S+30;L[2].a=[170,BY+S+20];L[3].a=[910,BY+S+20];}
+const NS='http://www.w3.org/2000/svg';
+const arrows=L.map((l,i)=>{
+  const [ax,ay]=l.a,[bx,by]=l.b, cx=(ax+bx)/2+(i%2?60:-60), cy=Math.min(ay,by)+(i<2?-40:60);
+  const p=document.createElementNS(NS,'path');p.setAttribute('d',`M${ax} ${ay} Q${cx} ${cy} ${bx} ${by}`);$('arrows').appendChild(p);
+  // arrow head pointing along the end tangent
+  const ang=Math.atan2(by-cy,bx-cx), h=document.createElementNS(NS,'path');
+  const k=22,a1=ang+2.6,a2=ang-2.6;
+  h.setAttribute('d',`M${bx+k*Math.cos(a1)} ${by+k*Math.sin(a1)} L${bx} ${by} L${bx+k*Math.cos(a2)} ${by+k*Math.sin(a2)}`);h.setAttribute('class','head');$('arrows').appendChild(h);
+  const len=p.getTotalLength();
+  const lab=document.createElement('div');lab.className='lab';
+  lab.style.top=l.y+'px';if(l.align==='left')lab.style.left=l.x+'px';else lab.style.right=(1080-l.x)+'px';
+  lab.innerHTML=[...AD.labels[i]].map(c=>`<span>${c===' '?'&nbsp;':c}</span>`).join('');
+  $('labs').appendChild(lab);
+  return {p,h,len,lab};
+});
+$('cap').style.top=(BY+S+(TALL?70:40))+'px';$('cap').style.fontSize=(TALL?54:46)+'px';$('cap').textContent=AD.backCaption;
+
+const E=AD.end;
+$('end').innerHTML=`<div style="position:absolute;left:0;right:0;top:${TALL?H*.27:H*.16}px">
+  <span class="l disp" style="font-size:112px;letter-spacing:.04em;line-height:1;margin-bottom:64px;color:var(--ink)">EVERWORD</span>
+  <span class="l disp" style="font-size:${TALL?80:70}px;line-height:1.06">${E.headline[0]}</span>
+  <span class="l disp" style="font-size:${TALL?80:70}px;line-height:1.06;color:var(--gold)">${E.headline[1]}</span>
+  <span class="l" style="margin-top:68px"><span class="btn">${E.cta} &nbsp;→</span></span>
+  <span class="l" style="font-family:'Alegreya Sans';font-size:34px;font-weight:500;color:var(--ink);margin-top:44px">${E.url}</span>
+  <span class="l eyebrow" style="font-size:21px;color:var(--muted);margin-top:14px">${E.note}</span></div>`;
+
+// timeline
+const ARR=[1.0,2.0,3.0,4.0], FLIP=[5.6,6.6], END=9.6, DUR=13;
+window.render=function(t){
+  [...$('hook').children].forEach((s,i)=>{const p=ease((t-.15-i*.25)/.6);s.style.opacity=p*(1-clamp((t-FLIP[0]+.2)/.4));s.style.transform=`translateY(${(1-p)*24}px)`});
+  const pin=ease((t-.1)/.6);$('fw').style.opacity=pin;
+  const fl=inout((t-FLIP[0])/(FLIP[1]-FLIP[0]));
+  const breathe=1+.015*Math.sin(t*1.4);
+  $('card').style.transform=`rotateY(${fl*180}deg) scale(${(.94+.06*pin)*breathe})`;
+  const out=1-clamp((t-FLIP[0]+.3)/.35);
+  arrows.forEach((a,i)=>{
+    const p=ease((t-ARR[i])/.7);
+    
+    a.p.style.opacity=p>.02?out:0;
+    // draw-on: mask via a second dash pattern is fiddly, so reveal with a growing visible length
+    a.p.style.strokeDasharray=p>=1?'3 13':dashUpTo(a.len,p);
+    a.h.style.opacity=clamp((p-.92)/.08)*out;
+    const chars=a.lab.children, n=chars.length, lp=clamp((t-ARR[i]-.35)/.5);
+    [...chars].forEach((c,j)=>c.style.opacity=j<lp*n?1:0);
+    a.lab.style.opacity=out;
+  });
+  const cp=ease((t-FLIP[1]+.1)/.5);$('cap').style.opacity=cp*(1-clamp((t-END)/.3));$('cap').style.transform=`translateY(${(1-cp)*18}px)`;
+  $('end').style.opacity=clamp((t-END)/.35);
+  [...$('end').querySelectorAll('.l')].forEach((s,i)=>{const p=ease((t-END-.15-i*.13)/.7);s.style.opacity=p;s.style.transform=`translateY(${(1-p)*24}px)`});
+};
+// dash pattern that shows a dotted line only up to fraction p of its length
+function dashUpTo(len,p){const vis=len*p;const n=Math.floor(vis/16);let a=[];for(let i=0;i<n;i++)a.push(3,13);a.push(0,len+20);return a.join(' ')}
+window.DUR=DUR;render(0);
+</script></body></html>

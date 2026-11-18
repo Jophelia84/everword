@@ -22,3 +22,10 @@ Needs Node, Playwright and ffmpeg.
     ffmpeg -framerate 30 -i frames-916/f%04d.jpg -c:v libx264 -crf 18 -pix_fmt yuv420p out-9x16.mp4
 
 Add `stills` as a third argument to render a few key frames as PNGs for checking.
+
+## Other templates
+- `everword-story-ad.html`: line-drawn story ("Everyone she loves, in one place")
+- `everword-callout-ad.html`: dashed arrows label the product, then it flips to the back
+- `everword-stickfigure-ad.html`: stick-figure "Stop / Start" story with chunked captions
+
+Render any of them by setting `PAGE`, for example `PAGE=everword-callout-ad.html node render.js 1920 frames`.
