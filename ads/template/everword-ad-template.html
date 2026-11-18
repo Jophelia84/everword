@@ -1,0 +1,147 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Prata&family=Alegreya+Sans:wght@400;500;700&display=block" rel="stylesheet">
+<style>
+:root{--paper:#FCFBF8;--tile:#F1EFEA;--ink:#211C1A;--muted:rgba(33,28,26,.62);--navy:#14113A;--gold:#A8813A;--line:rgba(33,28,26,.16)}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:var(--H);overflow:hidden;background:var(--paper)}
+#stage{position:relative;width:1080px;height:var(--H);overflow:hidden;background:var(--paper)}
+.layer{position:absolute;inset:0;opacity:0}
+.disp{font-family:'Prata',Georgia,serif;color:var(--navy);font-weight:400;letter-spacing:-.025em}
+.sans{font-family:'Alegreya Sans',sans-serif}
+.eyebrow{font-family:'Alegreya Sans';font-weight:700;font-size:24px;letter-spacing:.2em;text-transform:uppercase}
+.abs{position:absolute}
+.l{display:block;opacity:0}
+.btn{display:inline-block;background:var(--navy);color:var(--paper);font-family:'Alegreya Sans';font-weight:700;
+  font-size:30px;letter-spacing:.09em;text-transform:uppercase;padding:30px 52px;border-radius:2px}
+/* placeholder slot */
+.slot{position:absolute;overflow:hidden;background:var(--tile)}
+.slot .fill{position:absolute;inset:0;background-size:cover;background-position:center}
+.slot .ph{position:absolute;inset:18px;border:2px dashed rgba(33,28,26,.22);display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:18px;text-align:center}
+.slot .ph svg{width:64px;height:64px;opacity:.38}
+.slot .ph b{font-family:'Alegreya Sans';font-weight:700;font-size:26px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+.slot .ph i{font-family:'Alegreya Sans';font-style:normal;font-size:24px;color:rgba(33,28,26,.45)}
+.slot.round{border-radius:50%}
+.slot.round .ph{inset:10px;border-radius:50%;gap:6px}
+.slot.round .ph svg{width:44px;height:44px}
+.slot.round .ph b{font-size:17px;letter-spacing:.14em}
+.chip{display:inline-block;border:1.5px solid var(--navy);color:var(--navy);font-family:'Alegreya Sans';font-weight:700;
+  font-size:24px;letter-spacing:.14em;text-transform:uppercase;padding:14px 24px;border-radius:2px;margin:0 10px 12px 0;opacity:0}
+</style></head>
+<body><div id="stage"></div>
+<script>
+/* ================= EDIT HERE =================
+   Copy and image slots. Leave an image as null to show a placeholder;
+   put a path or URL (e.g. 'img/mom-necklace.jpg') to drop a real photo in. */
+const AD = {
+  eyebrow: 'A gift for every chapter',
+  headline: ['For everything', 'you’ve been', 'meaning to say', 'this Christmas.'],
+  hero: null,                                    // lifestyle photo, landscape
+  people: [                                      // one beat per recipient
+    { who:'Mom',            line:'Engraved with the names she loves.', portrait:null, product:null },
+    { who:'Grandmother',    line:'Every grandchild, by name.',         portrait:null, product:null },
+    { who:'Wife & Partner', line:'A date, a place, a promise.',        portrait:null, product:null },
+    { who:'For Him',        line:'Words he’ll carry every day.',        portrait:null, product:null },
+    { who:'Daughter',       line:'For the chapter she’s starting.',     portrait:null, product:null },
+  ],
+  personal: { headline:['Names, dates,','photos & places.'], chips:['Names','Dates','Photos','Places'], image:null },
+  end: { headline:['Find the gift','they’ll remember.'], cta:'Find their gift', url:'shopeverword.com', note:'Free standard US shipping' },
+};
+/* ============================================ */
+
+const P=new URLSearchParams(location.search);
+const H=+P.get('h')||1920, TALL=H>1600;
+document.documentElement.style.setProperty('--H',H+'px');
+const stage=document.getElementById('stage');
+const clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x));
+const ease=x=>{x=clamp(x);return 1-Math.pow(1-x,3)};
+const win=(t,a,b,fi=.3,fo=.3)=>Math.min(fi?clamp((t-a)/fi):(t>=a?1:0),fo?clamp((b-t)/fo):(t<b?1:0));
+const IMG='<svg viewBox="0 0 24 24" fill="none" stroke="#211C1A" stroke-width="1.3"><rect x="3" y="4" width="18" height="16" rx="1"/><circle cx="9" cy="10" r="2"/><path d="M3 18l5-5 4 4 3-3 6 6"/></svg>';
+function slot({x,y,w,h,label,sub,src,round}){
+  return `<div class="slot${round?' round':''}" style="left:${x}px;top:${y}px;width:${w}px;height:${h}px">
+    ${src?`<div class="fill" style="background-image:url('${src}')"></div>`:
+    `<div class="ph">${IMG}<b>${label}</b>${sub&&!round?`<i>${sub}</i>`:''}</div>`}</div>`;
+}
+function el(html){const d=document.createElement('div');d.className='layer';d.innerHTML=html;stage.appendChild(d);return d;}
+function rise(nodes,t,start,step=.14,dur=.6,dist=30){
+  [...nodes].forEach((s,i)=>{const p=ease((t-start-i*step)/dur);s.style.opacity=p;s.style.transform=`translateY(${(1-p)*dist}px)`});
+}
+
+/* ---------- layout per format ---------- */
+const M=72, W=1080-2*M;
+const L = TALL ? {
+  s1:{eb:250, hl:300, size:132, hero:{x:M,y:900,w:W,h:620}},
+  s2:{eb:250, circ:{x:M,y:300,d:210}, name:{x:M+240,y:318,size:104}, line:{y:448}, prod:{x:M,y:600,w:W,h:W}},
+  s3:{hl:250, size:116, chips:560, img:{x:M,y:680,w:W,h:820}},
+  s4:{top:H*.24},
+} : {
+  s1:{eb:84, hl:128, size:112, hero:{x:M,y:640,w:W,h:620}},
+  s2:{eb:72, circ:{x:M,y:116,d:170}, name:{x:M+200,y:128,size:88}, line:{y:236}, prod:{x:M+60,y:330,w:W-120,h:W-120}},
+  s3:{hl:80, size:100, chips:330, img:{x:M,y:420,w:W,h:850}},
+  s4:{top:H*.15},
+};
+
+/* ---------- build scenes ---------- */
+const s1=el(`
+  <div class="abs eyebrow" style="left:${M}px;top:${L.s1.eb}px;color:var(--gold)">${AD.eyebrow}</div>
+  <div class="abs disp" id="hl" style="left:${M}px;top:${L.s1.hl}px;font-size:${L.s1.size}px;line-height:1.0">
+    ${AD.headline.map((h,i)=>`<span class="l" style="${i===AD.headline.length-1?'color:var(--gold)':''}">${h}</span>`).join('')}</div>
+  ${slot({...L.s1.hero,label:'Lifestyle photo',sub:'Someone giving or wearing the gift · 3:2',src:AD.hero})}`);
+s1.querySelector('.eyebrow').classList.add('l');
+
+const s2=el(`<div class="abs eyebrow l" style="left:${M}px;top:${L.s2.eb}px;color:var(--muted)">Shop by person</div>`);
+const beats=AD.people.map((p,i)=>{const c=L.s2.circ;
+  const d=document.createElement('div');d.className='layer';d.innerHTML=`
+   ${slot({x:c.x,y:c.y,w:c.d,h:c.d,round:true,label:'Portrait',src:p.portrait})}
+   <div class="abs disp" style="left:${L.s2.name.x}px;top:${L.s2.name.y}px;font-size:${L.s2.name.size}px;line-height:1;white-space:nowrap">${p.who}</div>
+   <div class="abs sans" style="left:${L.s2.name.x}px;top:${L.s2.line.y}px;font-size:${TALL?36:30}px;color:var(--muted)">${p.line}</div>
+   ${slot({...L.s2.prod,label:`Product photo 0${i+1}`,sub:`Gift for ${p.who.replace('For ','')} · 1:1`,src:p.product})}`;
+  s2.appendChild(d);return d;});
+
+const s3=el(`
+  <div class="abs disp" id="phl" style="left:${M}px;top:${L.s3.hl}px;font-size:${L.s3.size}px;line-height:1.02">
+    ${AD.personal.headline.map(h=>`<span class="l">${h}</span>`).join('')}</div>
+  <div class="abs" id="chips" style="left:${M}px;top:${L.s3.chips}px;width:${W}px">${AD.personal.chips.map(c=>`<span class="chip">${c}</span>`).join('')}</div>
+  ${slot({...L.s3.img,label:'Personalisation close-up',sub:'Engraving or name detail · 1:1 or 4:5',src:AD.personal.image})}`);
+
+const s4=el(`<div class="abs" id="end" style="left:0;right:0;top:${L.s4.top}px;text-align:center">
+  <span class="l eyebrow" style="color:var(--gold);margin-bottom:40px">${AD.eyebrow}</span>
+  <span class="l disp" style="font-size:112px;letter-spacing:.04em;line-height:1;margin-bottom:64px;color:var(--ink)">EVERWORD</span>
+  ${AD.end.headline.map(h=>`<span class="l disp" style="font-size:84px;line-height:1.04">${h}</span>`).join('')}
+  <span class="l" style="margin-top:68px"><span class="btn">${AD.end.cta} &nbsp;→</span></span>
+  <span class="l sans" style="font-size:36px;font-weight:500;color:var(--ink);margin-top:48px">${AD.end.url}</span>
+  <span class="l eyebrow" style="font-size:21px;color:var(--muted);margin-top:16px">${AD.end.note}</span>
+</div>`);
+
+/* ---------- timeline ---------- */
+const BEAT=1.3, T1=[0,3.2], T2=[3.0,3.0+AD.people.length*BEAT], T3=[T2[1]-.1,T2[1]+2.8], T4=[T3[1]-.2,T3[1]+3.2];
+const DUR=Math.ceil(T4[1]);
+const slow=(node,t,a,len,amt=.05)=>{const f=node.querySelector('.fill,.ph');if(f)f.style.transform=`scale(${1+clamp((t-a)/len)*amt})`};
+
+window.render=function(t){
+  s1.style.opacity=win(t,...T1,0,.3);
+  rise(s1.querySelectorAll('.l'),t,.1,.24,.7,40);
+  const hero=s1.querySelector('.slot');const hp=ease((t-.9)/.8);hero.style.opacity=hp;hero.style.transform=`translateY(${(1-hp)*40}px)`;
+  slow(hero,t,.9,2.4);
+
+  s2.style.opacity=win(t,...T2,.3,.2);
+  rise(s2.querySelectorAll(':scope > .l'),t,T2[0]+.05,0,.5,20);
+  beats.forEach((d,i)=>{const a=T2[0]+i*BEAT,b=a+BEAT;
+    d.style.opacity=t>=a&&t<b+.12?Math.min(clamp((t-a)/.18),i===beats.length-1?1:clamp((b+.12-t)/.18)):0;
+    const kids=d.querySelectorAll(':scope > .abs, :scope > .slot');
+    rise([kids[0],kids[1],kids[2]],t,a,.06,.45,18);
+    const pr=kids[3];const q=ease((t-a)/.5);pr.style.opacity=q;pr.style.transform=`translateX(${(1-q)*50}px)`;slow(pr,t,a,BEAT,.04);
+  });
+
+  s3.style.opacity=win(t,...T3,.25,.2);
+  rise(s3.querySelectorAll('#phl .l'),t,T3[0]+.1,.2,.6);
+  rise(s3.querySelectorAll('.chip'),t,T3[0]+.5,.12,.4,14);
+  const pi=s3.querySelector('.slot');const r=ease((t-T3[0]-.3)/.7);pi.style.opacity=r;pi.style.transform=`translateY(${(1-r)*36}px)`;slow(pi,t,T3[0],2.8);
+
+  s4.style.opacity=win(t,T4[0],99,.3,0);
+  rise(s4.querySelectorAll('.l'),t,T4[0]+.15,.14,.7,24);
+};
+window.DUR=DUR;
+render(0);
+</script></body></html>
