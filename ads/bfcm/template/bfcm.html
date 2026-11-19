@@ -1,0 +1,127 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Prata&family=Alegreya+Sans:wght@400;500;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&display=block" rel="stylesheet">
+<style>
+:root{--cream:#FBF6EE;--gold:#D2B07A;--navy:#14113A;--ink:#1d1714}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:1080px;height:var(--H);overflow:hidden;background:#120e0c}
+#stage{position:relative;width:1080px;height:var(--H);overflow:hidden}
+.shot{position:absolute;inset:0;opacity:0;overflow:hidden}
+.shot .img{position:absolute;inset:-2%;background-size:cover;background-position:center;will-change:transform}
+.shot .shade{position:absolute;inset:0;background:linear-gradient(to top,rgba(14,9,7,.9) 0%,rgba(14,9,7,.72) 30%,rgba(14,9,7,.3) 50%,rgba(14,9,7,0) 66%)}
+.shot .shade.top{background:linear-gradient(to bottom,rgba(14,9,7,.45) 0%,rgba(14,9,7,0) 22%)}
+.line{position:absolute;left:84px;text-shadow:0 2px 18px rgba(0,0,0,.35);font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;color:var(--cream);line-height:.98;letter-spacing:-.005em}
+.line span{display:block;opacity:0}
+.rule{height:2px;background:var(--cream);width:0;margin-top:34px;opacity:.85}
+.label{position:absolute;left:84px;font-family:'Alegreya Sans';font-weight:500;font-size:32px;letter-spacing:.26em;text-transform:uppercase;color:var(--cream);opacity:0;text-shadow:0 1px 12px rgba(0,0,0,.5)}
+.wm{position:absolute;left:0;right:0;text-align:center;font-family:'Prata',serif;color:var(--cream);letter-spacing:.42em;padding-left:.42em;opacity:0}
+.badge{position:absolute;right:56px;font-family:'Alegreya Sans';font-weight:700;font-size:24px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--ink);background:var(--cream);padding:14px 22px;border-radius:2px;opacity:0}
+#card{position:absolute;inset:0;opacity:0}
+#card .bg{position:absolute;inset:-60px;background-size:cover;background-position:center;filter:blur(26px) brightness(.5) saturate(1.1)}
+#card .tint{position:absolute;inset:0;background:rgba(18,14,30,.5)}
+#card .in{position:absolute;left:0;right:0;text-align:center;color:var(--cream)}
+#card .l{display:block;opacity:0}
+.eb{font-family:'Alegreya Sans';font-weight:700;font-size:26px;letter-spacing:.32em;text-transform:uppercase;color:var(--gold)}
+.hd{font-family:'Cormorant Garamond',serif;font-weight:500;line-height:.96;letter-spacing:-.01em}
+.tiers{width:720px;margin:0 auto}
+.tier{display:flex;justify-content:space-between;align-items:baseline;border-top:1.5px solid rgba(251,246,238,.35);padding:20px 6px}
+.tier:last-child{border-bottom:1.5px solid rgba(251,246,238,.35)}
+.tier .a{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:46px}
+.tier .b{font-family:'Alegreya Sans';font-weight:700;font-size:34px;letter-spacing:.12em;text-transform:uppercase}
+.small{font-family:'Alegreya Sans';font-weight:500;font-size:28px;letter-spacing:.06em;color:rgba(251,246,238,.85)}
+.btn{display:inline-block;background:var(--cream);color:var(--ink);font-family:'Alegreya Sans';font-weight:700;font-size:30px;letter-spacing:.14em;text-transform:uppercase;padding:28px 56px;border-radius:2px}
+</style></head>
+<body><div id="stage"><div id="shots"></div><div id="card"><div class="bg" id="cardbg"></div><div class="tint"></div><div class="in" id="cardin"></div></div></div>
+<script>
+/* ================= EDIT HERE ================= */
+const PRODUCTS = {
+  stocking: { img:'bf/stocking.jpg', pos:'50% 40%', label:'for the little ones', line:['their name,','by the fire.'] },
+  oscar:    { img:'bf/oscar.jpg',    pos:'50% 50%', label:'for the nursery',     line:['goodnight,','oscar.'] },
+  junekai:  { img:'bf/junekai.jpg',  pos:'64% 50%', label:'for you two',         line:['our kind','of happy.'] },
+  parker:   { img:'bf/parker.jpg',   pos:'50% 40%', label:'for the whole family', line:['one name.','the whole','family.'] },
+};
+const OFFER = { eyebrow:'Black Friday', headline:['gift more,','save more.'],
+  tiers:[['1 gift','20% off'],['2 gifts','25% off'],['3+ gifts','30% off']],
+  small:'free US shipping · through Dec 1', cta:'Shop the sale' };
+const DEADLINE = { eyebrow:'Made just for them', headline:['order by','Dec 15.'], daysLeft:null,
+  small:'for Christmas delivery · 20% off everything<br>free US shipping', cta:'Find their gift' };
+const EARLY = { eyebrow:'Black Friday early access', headline:['the list','shops first.'],
+  small:'up to 30% off opens Mon, Nov 23<br>for subscribers, before everyone else', cta:'Join the list' };
+const URL_TEXT='shopeverword.com';
+/* ============================================ */
+const Q=new URLSearchParams(location.search);
+const H=+Q.get('h')||1920, TALL=H>1600, V=Q.get('v')||'montage-bf';
+if(Q.get('days'))DEADLINE.daysLeft=+Q.get('days');
+const daysText=n=>n===1?'last day to order':`${n} days left`;
+document.documentElement.style.setProperty('--H',H+'px');
+const $=id=>document.getElementById(id);
+const clamp=(x,a=0,b=1)=>Math.min(b,Math.max(a,x));
+const ease=x=>{x=clamp(x);return 1-Math.pow(1-x,3)};
+
+/* ---------- build the sequence for this variant ---------- */
+// shot = {p:product key, a:start, b:end, line?:[...], label?:bool, hook?:[...]}
+let shots=[], CARD, cardKind;
+const hookLine={'montage-bf':['up to 30% off','for everyone','on your list.'],'montage-deadline':['made just','for them.'],'early':['black friday','starts early','this year.']};
+if(V.startsWith('single-')){
+  const k=V.slice(7);shots=[{p:k,a:0,b:5.0,line:PRODUCTS[k].line,label:true,badge:'Up to 30% off'}];CARD=4.7;cardKind='offer';
+}else{
+  const order=['stocking','junekai','oscar','parker'];
+  shots.push({p:order[0],a:0,b:2.9,line:hookLine[V],badge:V==='montage-deadline'&&DEADLINE.daysLeft?daysText(DEADLINE.daysLeft):null});
+  order.forEach((k,i)=>shots.push({p:k,a:2.8+i*1.25,b:2.8+(i+1)*1.25+.12,label:true}));
+  CARD=2.8+order.length*1.25;cardKind=V==='montage-deadline'?'deadline':V==='early'?'early':'offer';
+}
+const DUR=Math.ceil(CARD+5.2);
+
+const safeBot=TALL?440:150, safeTop=TALL?250:70;
+shots.forEach((s,i)=>{
+  const P=PRODUCTS[s.p], d=document.createElement('div');d.className='shot';
+  const lineSize=TALL?(s.line&&s.line.length>2?112:124):(s.line&&s.line.length>2?96:106);
+  d.innerHTML=`<div class="img" style="background-image:url('${P.img}');background-position:${P.pos}"></div>
+    <div class="shade"></div><div class="shade top"></div>
+    ${s.line?`<div class="line" style="bottom:${safeBot+70}px;font-size:${lineSize}px">${s.line.map(x=>`<span>${x}</span>`).join('')}<div class="rule"></div></div>`:''}
+    ${s.label?`<div class="label" style="bottom:${s.line?safeBot+10:safeBot+40}px">${P.label}</div>`:''}
+    ${s.badge?`<div class="badge" style="top:${safeTop}px">${s.badge}</div>`:''}
+    <div class="wm" style="bottom:${TALL?safeBot-90:56}px;font-size:30px">EVERWORD</div>`;
+  $('shots').appendChild(d);s.el=d;
+});
+
+/* ---------- end card ---------- */
+const lastImg=PRODUCTS[shots[shots.length-1].p];
+$('cardbg').style.backgroundImage=`url('${lastImg.img}')`;
+const hdSize=TALL?150:124;
+function cardHTML(o,kind){
+  let mid='';
+  if(kind==='offer') mid=`<span class="l tiers" style="margin-top:${TALL?64:40}px">${o.tiers.map(t=>`<div class="tier"><span class="a">${t[0]}</span><span class="b">${t[1]}</span></div>`).join('')}</span>`;
+  if(kind==='deadline'&&o.daysLeft) mid=`<span class="l" style="margin-top:36px"><span class="eb" style="color:var(--cream);border:1.5px solid rgba(251,246,238,.6);padding:12px 22px">${daysText(o.daysLeft)}</span></span>`;
+  return `<span class="l eb" style="margin-bottom:${TALL?40:28}px">${o.eyebrow}</span>
+    ${o.headline.map(h=>`<span class="l hd" style="font-size:${hdSize}px">${h}</span>`).join('')}
+    ${mid}
+    <span class="l small" style="margin-top:${TALL?48:32}px;line-height:1.5">${o.small}</span>
+    <span class="l" style="margin-top:${TALL?56:40}px"><span class="btn">${o.cta} &nbsp;→</span></span>
+    <span class="l small" style="margin-top:${TALL?36:26}px;letter-spacing:.1em">${URL_TEXT}</span>
+    <span class="l" style="font-family:Prata;font-size:30px;letter-spacing:.42em;padding-left:.42em;margin-top:${TALL?70:40}px">EVERWORD</span>`;
+}
+$('cardin').innerHTML=cardHTML(kindObj(),cardKind);
+function kindObj(){return cardKind==='offer'?OFFER:cardKind==='deadline'?DEADLINE:EARLY}
+$('cardin').style.top=(TALL?(cardKind==='offer'?250:330):(cardKind==='offer'?60:120))+'px';
+
+/* ---------- render ---------- */
+window.render=function(t){
+  shots.forEach((s,i)=>{
+    const fin=i===0?1:clamp((t-s.a)/.22), last=i===shots.length-1;
+    s.el.style.opacity=(t>=s.a&&(t<s.b||last))?fin:0;
+    const u=clamp((t-s.a)/((last?DUR:s.b)-s.a));
+    s.el.querySelector('.img').style.transform=`scale(${1.05+u*.1}) translate(${(i%2?-1:1)*u*14}px,${-u*10}px)`;
+    if(s.line){[...s.el.querySelectorAll('.line span')].forEach((sp,j)=>{const p=ease((t-s.a-.25-j*.28)/.8);sp.style.opacity=p;sp.style.transform=`translateY(${(1-p)*26}px)`});
+      s.el.querySelector('.rule').style.width=ease((t-s.a-.25-s.line.length*.28-.2)/.6)*90+'px'}
+    const lb=s.el.querySelector('.label');if(lb){const p=ease((t-s.a-(s.line?1.6:.1))/.5);lb.style.opacity=p;lb.style.transform=`translateY(${(1-p)*14}px)`}
+    const bd=s.el.querySelector('.badge');if(bd){const p=ease((t-s.a-.6)/.4);bd.style.opacity=p}
+    const wm=s.el.querySelector('.wm');wm.style.opacity=.9*ease((t-.3)/.6);
+  });
+  const c=clamp((t-CARD)/.45);$('card').style.opacity=c;
+  $('cardbg').style.transform=`scale(${1.05+clamp((t-CARD)/5)*.06})`;
+  [...$('cardin').querySelectorAll('.l')].forEach((s,i)=>{const p=ease((t-CARD-.2-i*.12)/.7);s.style.opacity=p;s.style.transform=`translateY(${(1-p)*22}px)`});
+};
+window.DUR=DUR;render(0);
+</script></body></html>
