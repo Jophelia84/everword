@@ -6,8 +6,8 @@ Deadline phase: 20% off everything, order by Dec 15 for Christmas delivery (Shin
 ## When to run what
 | Dates | Creative |
 |---|---|
-| Nov 19–22 | `early-access` (email list growth) |
-| Nov 23–Dec 1 | `bf-montage`, `bf-stocking`, `bf-oscar`, `bf-junekai`, `bf-parker`, `offer` static |
+| Nov 19–25 | `early-access` (email list growth; subscribers get the offer by email from Nov 23) |
+| Nov 26–Dec 1 | `bf-montage`, `bf-stocking`, `bf-oscar`, `bf-junekai`, `bf-parker`, `offer` static |
 | Dec 2–12 | `deadline-montage`, `deadline` static |
 | Dec 13–14 | `deadline-3days` |
 | Dec 15 | `deadline-lastday` |
