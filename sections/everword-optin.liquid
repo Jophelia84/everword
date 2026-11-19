@@ -48,8 +48,9 @@
       {%- if section.settings.image != blank -%}
         {%- assign oi = section.settings.image -%}
         <div class="ew-optin__art">
-          <img src="{{ oi | image_url: width: 800 }}" alt="" aria-hidden="true"
-               loading="lazy" width="{{ oi.width }}" height="{{ oi.height }}">
+          <img src="{{ oi | image_url: width: 1200 }}" alt="" aria-hidden="true"
+               loading="lazy" width="{{ oi.width }}" height="{{ oi.height }}"
+               {%- if oi.presentation.focal_point != blank %} style="object-position: {{ oi.presentation.focal_point }}"{% endif %}>
         </div>
       {%- endif -%}
 

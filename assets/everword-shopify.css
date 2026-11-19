@@ -222,7 +222,7 @@ cart-items-component button[name='checkout'] {
 .ew-optin__x:hover{color:var(--cream)}
 @media(max-width:700px){
   .ew-optin__panel{grid-template-columns:1fr}
-  .ew-optin__art{min-height:150px}
+  .ew-optin__art{min-height:190px}
 }
 @media(prefers-reduced-motion:reduce){
   .ew-optin__scrim,.ew-optin__panel{transition:none}
