@@ -190,6 +190,10 @@ cart-items-component button[name='checkout'] {
   margin:0 0 22px;font-family:'Alegreya Sans',sans-serif;font-weight:300;
   font-size:14px;line-height:1.7;color:var(--cream-dim);max-width:38ch;
 }
+.ew-optin__tiers{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:8px;margin:0 0 20px}
+.ew-optin__tier{border:1px solid var(--line);padding:10px 6px;text-align:center}
+.ew-optin__tier-n{display:block;font-family:'Prata',serif;font-size:20px;line-height:1.1;color:var(--cream)}
+.ew-optin__tier-w{display:block;margin-top:3px;font-family:'Alegreya Sans',sans-serif;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--cream-dim)}
 .ew-optin__form{display:flex;gap:0;border-bottom:1px solid var(--line)}
 .ew-optin__form input{
   flex:1;min-width:0;background:none;border:0;padding:13px 2px;outline:none;
